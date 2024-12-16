@@ -65,6 +65,12 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 				local_scale_factor = one_f/dot(tmp_vec4, u_light[i].light_attenuation_factors);
 			}
 
+			// for local illumination.
+			if (sqrt(dot(L_WC, L_WC)) > 200.0f) {	// should be upgraded for efficiency.
+				local_scale_factor = zero_f;
+//				return vec4(0.0f, 0.0f, 1.0f, 1.0f);
+			}
+
 			L_WC = normalize(L_WC);
 
 			if (u_light[i].spot_cutoff_angle < 180.0f) { // [0.0f, 90.0f] or 180.0f
@@ -79,6 +85,13 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 					tmp_float = zero_f;
 				local_scale_factor *= tmp_float;
 			}
+//			else {
+//				// for local illumination.
+//				if (sqrt(dot(L_WC, L_WC)) > 200.0f) {	// should be upgraded for efficiency.
+//					local_scale_factor = zero_f;
+//	//				return vec4(0.0f, 0.0f, 1.0f, 1.0f);
+//				}
+//			}
 		}
 		else {  // directional light source
 			L_WC = normalize(u_light[i].position.xyz);
