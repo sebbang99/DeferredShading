@@ -25,6 +25,9 @@ uniform vec4 u_global_ambient_color;
 uniform LIGHT u_light[NUMBER_OF_LIGHTS_SUPPORTED];
 uniform MATERIAL u_material;
 
+// for local illumination
+#define LIGHT_RANGE 200.0f
+
 uniform sampler2D u_base_texture;
 
 uniform bool u_flag_texture_mapping = true;
@@ -55,7 +58,7 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 		if (u_light[i].position.w != zero_f) { // point light source
 			L_WC = u_light[i].position.xyz - P_WC.xyz;
 
-			if (u_light[i].light_attenuation_factors.w  != zero_f) {
+			if (u_light[i].light_attenuation_factors.w != zero_f) {
 				vec4 tmp_vec4;
 
 				tmp_vec4.x = one_f;
@@ -66,7 +69,7 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 			}
 
 			// for local illumination.
-			if (sqrt(dot(L_WC, L_WC)) > 200.0f) {	// should be upgraded for efficiency.
+			if (sqrt(dot(L_WC, L_WC)) > LIGHT_RANGE) {	// should be upgraded for efficiency.
 				local_scale_factor = zero_f;
 //				return vec4(0.0f, 0.0f, 1.0f, 1.0f);
 			}
@@ -85,23 +88,19 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 					tmp_float = zero_f;
 				local_scale_factor *= tmp_float;
 			}
-//			else {
-//				// for local illumination.
-//				if (sqrt(dot(L_WC, L_WC)) > 200.0f) {	// should be upgraded for efficiency.
-//					local_scale_factor = zero_f;
-//	//				return vec4(0.0f, 0.0f, 1.0f, 1.0f);
-//				}
-//			}
 		}
 		else {  // directional light source
 			L_WC = normalize(u_light[i].position.xyz);
 		}	
 
-		if (local_scale_factor > zero_f) {				
+		if (local_scale_factor > zero_f) {		
+//			return vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
 		 	vec4 local_color_sum = u_light[i].ambient_color * u_material.ambient_color;
 
 			tmp_float = dot(N_WC, L_WC);  
 			if (tmp_float > zero_f) {  
+//				return vec4(1.0f, 0.0f, 0.0f, 1.0f);
 				local_color_sum += u_light[i].diffuse_color*base_color*tmp_float;
 			
 				vec3 H_WC = normalize(L_WC - normalize(P_WC));

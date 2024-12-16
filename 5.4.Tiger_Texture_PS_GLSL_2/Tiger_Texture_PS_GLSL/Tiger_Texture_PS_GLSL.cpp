@@ -1288,6 +1288,7 @@ void prepare_shader_program(void) {
 	loc_ModelViewMatrix_TXPS = glGetUniformLocation(h_ShaderProgram_TXPS, "u_ModelViewMatrix");
 	loc_ModelViewMatrixInvTrans_TXPS = glGetUniformLocation(h_ShaderProgram_TXPS, "u_ModelViewMatrixInvTrans");
 	loc_ModelMatrix_TXPS = glGetUniformLocation(h_ShaderProgram_TXPS, "u_ModelMatrix");
+	loc_ModelMatrixInvTrans_TXPS = glGetUniformLocation(h_ShaderProgram_TXPS, "u_ModelMatrixInvTrans");
 
 	loc_global_ambient_color = glGetUniformLocation(h_ShaderProgram_TXPS, "u_global_ambient_color");
 	for (i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
@@ -1411,31 +1412,37 @@ void set_up_scene_lights(void) {
 
 	// point_light_WC: use light 1
 	light[1].light_on = 1;
-	light[1].position[0] = -200.0f; light[1].position[1] = 50.0f; 
+	light[1].position[0] = -200.0f; light[1].position[1] = 150.0f; 
 	light[1].position[2] = 200.0f; light[1].position[3] = 1.0f;
 
 	light[1].ambient_color[0] = 0.13f; light[1].ambient_color[1] = 0.13f;
 	light[1].ambient_color[2] = 0.13f; light[1].ambient_color[3] = 1.0f;
 
-	light[1].diffuse_color[0] = 0.572f; light[1].diffuse_color[1] = 0.572f;
-	light[1].diffuse_color[2] = 0.572f; light[1].diffuse_color[3] = 1.0f;
+	light[1].diffuse_color[0] = 0.9f; light[1].diffuse_color[1] = 0.9f;
+	light[1].diffuse_color[2] = 0.9f; light[1].diffuse_color[3] = 1.0f;
 
-	light[1].specular_color[0] = 0.772f; light[1].specular_color[1] = 0.772f;
-	light[1].specular_color[2] = 0.772f; light[1].specular_color[3] = 1.0f;
+	light[1].specular_color[0] = 0.9f; light[1].specular_color[1] = 0.9f;
+	light[1].specular_color[2] = 0.9f; light[1].specular_color[3] = 1.0f;
 
 	// point_light_WC: use light 1
 	light[2].light_on = 1;
-	light[2].position[0] = 200.0f; light[2].position[1] = 50.0f; 
+	light[2].position[0] = 200.0f; light[2].position[1] = 150.0f; 
 	light[2].position[2] = 200.0f; light[2].position[3] = 1.0f;
 
 	light[2].ambient_color[0] = 0.13f; light[2].ambient_color[1] = 0.13f;
 	light[2].ambient_color[2] = 0.13f; light[2].ambient_color[3] = 1.0f;
 
-	light[2].diffuse_color[0] = 0.572f; light[2].diffuse_color[1] = 0.572f;
-	light[2].diffuse_color[2] = 0.572f; light[2].diffuse_color[3] = 1.0f;
+	//light[2].diffuse_color[0] = 0.572f; light[2].diffuse_color[1] = 0.572f;
+	//light[2].diffuse_color[2] = 0.572f; light[2].diffuse_color[3] = 1.0f;
 
-	light[2].specular_color[0] = 0.772f; light[2].specular_color[1] = 0.772f;
-	light[2].specular_color[2] = 0.772f; light[2].specular_color[3] = 1.0f;
+	//light[2].specular_color[0] = 0.772f; light[2].specular_color[1] = 0.772f;
+	//light[2].specular_color[2] = 0.772f; light[2].specular_color[3] = 1.0f;
+
+	light[2].diffuse_color[0] = light[2].specular_color[0] = static_cast<float>(((rand() % 100) / 200.0f) + 0.5);
+	light[2].diffuse_color[1] = light[2].specular_color[1] = static_cast<float>(((rand() % 100) / 200.0f) + 0.5);
+	light[2].diffuse_color[2] = light[2].specular_color[2] = static_cast<float>(((rand() % 100) / 200.0f) + 0.5);
+	light[2].diffuse_color[3] = light[2].specular_color[3] = 1.0f;
+
 
 	// spot_light_WC
 	/*light[1].light_on = 1;
