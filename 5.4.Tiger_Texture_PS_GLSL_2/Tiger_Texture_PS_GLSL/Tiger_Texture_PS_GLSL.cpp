@@ -1397,51 +1397,31 @@ void initialize_OpenGL(void) {
 
 void set_up_scene_lights(void) {
 	// point_light_WC: use light 0
-	light[0].light_on = 1;
 	light[0].position[0] = 0.0f; light[0].position[1] = 200.0f; 	// point light position in !! WC !!
 	light[0].position[2] = 0.0f; light[0].position[3] = 1.0f;
 
-	light[0].ambient_color[0] = 0.13f; light[0].ambient_color[1] = 0.13f;
-	light[0].ambient_color[2] = 0.13f; light[0].ambient_color[3] = 1.0f;
-
-	light[0].diffuse_color[0] = 0.572f; light[0].diffuse_color[1] = 0.572f;
-	light[0].diffuse_color[2] = 0.572f; light[0].diffuse_color[3] = 1.0f;
-
-	light[0].specular_color[0] = 0.772f; light[0].specular_color[1] = 0.772f;
-	light[0].specular_color[2] = 0.772f; light[0].specular_color[3] = 1.0f;
-
 	// point_light_WC: use light 1
-	light[1].light_on = 1;
 	light[1].position[0] = -200.0f; light[1].position[1] = 150.0f; 
 	light[1].position[2] = 200.0f; light[1].position[3] = 1.0f;
 
-	light[1].ambient_color[0] = 0.13f; light[1].ambient_color[1] = 0.13f;
-	light[1].ambient_color[2] = 0.13f; light[1].ambient_color[3] = 1.0f;
-
-	light[1].diffuse_color[0] = 0.9f; light[1].diffuse_color[1] = 0.9f;
-	light[1].diffuse_color[2] = 0.9f; light[1].diffuse_color[3] = 1.0f;
-
-	light[1].specular_color[0] = 0.9f; light[1].specular_color[1] = 0.9f;
-	light[1].specular_color[2] = 0.9f; light[1].specular_color[3] = 1.0f;
-
-	// point_light_WC: use light 1
-	light[2].light_on = 1;
+	// point_light_WC: use light 2
 	light[2].position[0] = 200.0f; light[2].position[1] = 150.0f; 
 	light[2].position[2] = 200.0f; light[2].position[3] = 1.0f;
 
-	light[2].ambient_color[0] = 0.13f; light[2].ambient_color[1] = 0.13f;
-	light[2].ambient_color[2] = 0.13f; light[2].ambient_color[3] = 1.0f;
+	// point_light_WC: use light 3
+	light[3].position[0] = 200.0f; light[3].position[1] = 150.0f;
+	light[3].position[2] = -200.0f; light[3].position[3] = 1.0f;
 
-	//light[2].diffuse_color[0] = 0.572f; light[2].diffuse_color[1] = 0.572f;
-	//light[2].diffuse_color[2] = 0.572f; light[2].diffuse_color[3] = 1.0f;
+	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+		light[i].light_on = 1;
 
-	//light[2].specular_color[0] = 0.772f; light[2].specular_color[1] = 0.772f;
-	//light[2].specular_color[2] = 0.772f; light[2].specular_color[3] = 1.0f;
+		light[i].ambient_color[0] = 0.13f; light[i].ambient_color[1] = 0.13f;
+		light[i].ambient_color[2] = 0.13f; light[i].ambient_color[3] = 1.0f;
 
-	light[2].diffuse_color[0] = light[2].specular_color[0] = static_cast<float>(((rand() % 100) / 200.0f) + 0.5);
-	light[2].diffuse_color[1] = light[2].specular_color[1] = static_cast<float>(((rand() % 100) / 200.0f) + 0.5);
-	light[2].diffuse_color[2] = light[2].specular_color[2] = static_cast<float>(((rand() % 100) / 200.0f) + 0.5);
-	light[2].diffuse_color[3] = light[2].specular_color[3] = 1.0f;
+		light[i].diffuse_color[0] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
+		light[i].diffuse_color[1] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
+		light[i].diffuse_color[2] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
+	}
 
 
 	// spot_light_WC
@@ -1465,26 +1445,34 @@ void set_up_scene_lights(void) {
 
 
 	glUseProgram(h_ShaderProgram_TXPS);
-	// light 0
-	glUniform1i(loc_light[0].light_on, light[0].light_on);
-	glUniform4fv(loc_light[0].position, 1, light[0].position);
-	glUniform4fv(loc_light[0].ambient_color, 1, light[0].ambient_color);
-	glUniform4fv(loc_light[0].diffuse_color, 1, light[0].diffuse_color);
-	glUniform4fv(loc_light[0].specular_color, 1, light[0].specular_color);
+	//// light 0
+	//glUniform1i(loc_light[0].light_on, light[0].light_on);
+	//glUniform4fv(loc_light[0].position, 1, light[0].position);
+	//glUniform4fv(loc_light[0].ambient_color, 1, light[0].ambient_color);
+	//glUniform4fv(loc_light[0].diffuse_color, 1, light[0].diffuse_color);
+	//glUniform4fv(loc_light[0].specular_color, 1, light[0].specular_color);
 
-	// light 1
-	glUniform1i(loc_light[1].light_on, light[1].light_on);
-	glUniform4fv(loc_light[1].position, 1, light[1].position);
-	glUniform4fv(loc_light[1].ambient_color, 1, light[1].ambient_color);
-	glUniform4fv(loc_light[1].diffuse_color, 1, light[1].diffuse_color);
-	glUniform4fv(loc_light[1].specular_color, 1, light[1].specular_color);
+	//// light 1
+	//glUniform1i(loc_light[1].light_on, light[1].light_on);
+	//glUniform4fv(loc_light[1].position, 1, light[1].position);
+	//glUniform4fv(loc_light[1].ambient_color, 1, light[1].ambient_color);
+	//glUniform4fv(loc_light[1].diffuse_color, 1, light[1].diffuse_color);
+	//glUniform4fv(loc_light[1].specular_color, 1, light[1].specular_color);
 
-	// light 2
-	glUniform1i(loc_light[2].light_on, light[2].light_on);
-	glUniform4fv(loc_light[2].position, 1, light[2].position);
-	glUniform4fv(loc_light[2].ambient_color, 1, light[2].ambient_color);
-	glUniform4fv(loc_light[2].diffuse_color, 1, light[2].diffuse_color);
-	glUniform4fv(loc_light[2].specular_color, 1, light[2].specular_color);
+	//// light 2
+	//glUniform1i(loc_light[2].light_on, light[2].light_on);
+	//glUniform4fv(loc_light[2].position, 1, light[2].position);
+	//glUniform4fv(loc_light[2].ambient_color, 1, light[2].ambient_color);
+	//glUniform4fv(loc_light[2].diffuse_color, 1, light[2].diffuse_color);
+	//glUniform4fv(loc_light[2].specular_color, 1, light[2].specular_color);
+	
+	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+		glUniform1i(loc_light[i].light_on, light[i].light_on);
+		glUniform4fv(loc_light[i].position, 1, light[i].position);
+		glUniform4fv(loc_light[i].ambient_color, 1, light[i].ambient_color);
+		glUniform4fv(loc_light[i].diffuse_color, 1, light[i].diffuse_color);
+		glUniform4fv(loc_light[i].specular_color, 1, light[i].specular_color);
+	}
 
 	// spot light
 	/*glUniform1i(loc_light[1].light_on, light[1].light_on);
