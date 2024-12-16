@@ -29,6 +29,12 @@ glm::mat4 ModelViewProjectionMatrix, ModelViewMatrix;
 glm::mat3 ModelViewMatrixInvTrans;
 glm::mat4 ViewMatrix, ProjectionMatrix;
 
+// for camera moving
+glm::vec3 cameraPosition;
+int PRP_distance_level = 0;
+glm::vec3 PRP, VRP, VUV;
+glm::vec3 u, v, n;
+
 #define TO_RADIAN 0.01745329252f  
 #define TO_DEGREE 57.295779513f
 #define BUFFER_OFFSET(offset) ((GLvoid *) (offset))
@@ -838,7 +844,7 @@ void timer_scene(int value) {
 
 void keyboard(unsigned char key, int x, int y) {
 	static int flag_cull_face = 0;
-	static int PRP_distance_level = 0;
+	//static int PRP_distance_level = 0;
 	static int flag_floor_mag_filter = 0, flag_floor_min_filter = 0;
 	static int flag_tiger_mag_filter = 0, flag_tiger_min_filter = 0;
 
@@ -972,11 +978,20 @@ void keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 	case 'd':
+	{
 		PRP_distance_level = (PRP_distance_level + 1) % 6;
 		fprintf(stdout, "^^^ Distance level = %d.\n", PRP_distance_level);
 
-		ViewMatrix = glm::lookAt(PRP_distance_scale[PRP_distance_level] * glm::vec3(700.0f, 400.0f, 700.0f),
-			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//ViewMatrix = glm::lookAt(PRP_distance_scale[PRP_distance_level] * glm::vec3(700.0f, 400.0f, 700.0f),
+		//	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		PRP = PRP_distance_scale[PRP_distance_level] * cameraPosition;
+		ViewMatrix = glm::lookAt(PRP, VRP, VUV);
+
+		// Update u, v, n of camera coordinates.
+		glm::vec3 VPN = PRP - VRP;
+		u = glm::normalize(glm::cross(VUV, VPN));
+		v = glm::normalize(glm::cross(VPN, u));
+		n = glm::normalize(VPN);
 
 		glUseProgram(h_ShaderProgram_TXPS);
 		// Must update the light 1's geometry in EC.
@@ -989,6 +1004,7 @@ void keyboard(unsigned char key, int x, int y) {
 		glUseProgram(0);
 		glutPostRedisplay();
 		break;
+	}
 	case 'p':
 		flag_polygon_fill = 1 - flag_polygon_fill;
 		if (flag_polygon_fill) 
@@ -1000,6 +1016,113 @@ void keyboard(unsigned char key, int x, int y) {
 	case 27: // ESC key
 		glutLeaveMainLoop(); // Incur destuction callback for cleanups
 		break;
+	}
+}
+
+void special(int key, int x, int y) {
+	switch (key) {
+	case GLUT_KEY_LEFT:
+	{
+		// Move left
+		cameraPosition -= u;
+		PRP = PRP_distance_scale[PRP_distance_level] * cameraPosition;
+		VRP -= u;
+		ViewMatrix = glm::lookAt(PRP, VRP, VUV);
+
+		// Update u, v, n of camera coordinates.
+		glm::vec3 VPN = PRP - VRP;
+		u = glm::normalize(glm::cross(VUV, VPN));
+		v = glm::normalize(glm::cross(VPN, u));
+		n = glm::normalize(VPN);
+
+		glutPostRedisplay();
+		break;
+	}
+	case GLUT_KEY_RIGHT:
+	{
+		// Move right
+		cameraPosition += u;
+		PRP = PRP_distance_scale[PRP_distance_level] * cameraPosition;
+		VRP += u;
+		ViewMatrix = glm::lookAt(PRP, VRP, VUV);
+
+		// Update u, v, n of camera coordinates.
+		glm::vec3 VPN = PRP - VRP;
+		u = glm::normalize(glm::cross(VUV, VPN));
+		v = glm::normalize(glm::cross(VPN, u));
+		n = glm::normalize(VPN);
+
+		glutPostRedisplay();
+		break;
+	}
+	case GLUT_KEY_UP:
+	{
+		// Move forward
+		cameraPosition -= n;
+		PRP = PRP_distance_scale[PRP_distance_level] * cameraPosition;
+		VRP -= n;
+		ViewMatrix = glm::lookAt(PRP, VRP, VUV);
+
+		// Update u, v, n of camera coordinates.
+		glm::vec3 VPN = PRP - VRP;
+		u = glm::normalize(glm::cross(VUV, VPN));
+		v = glm::normalize(glm::cross(VPN, u));
+		n = glm::normalize(VPN);
+
+		glutPostRedisplay();
+		break;
+	}
+	case GLUT_KEY_DOWN:
+	{
+		// Move backward
+		cameraPosition += n;
+		PRP = PRP_distance_scale[PRP_distance_level] * cameraPosition;
+		VRP += n;
+		ViewMatrix = glm::lookAt(PRP, VRP, VUV);
+
+		// Update u, v, n of camera coordinates.
+		glm::vec3 VPN = PRP - VRP;
+		u = glm::normalize(glm::cross(VUV, VPN));
+		v = glm::normalize(glm::cross(VPN, u));
+		n = glm::normalize(VPN);
+
+		glutPostRedisplay();
+		break;
+	}
+	case GLUT_KEY_PAGE_UP:
+	{
+		// Move up
+		cameraPosition += v;
+		PRP = PRP_distance_scale[PRP_distance_level] * cameraPosition;
+		VRP += v;
+		ViewMatrix = glm::lookAt(PRP, VRP, VUV);
+
+		// Update u, v, n of camera coordinates.
+		glm::vec3 VPN = PRP - VRP;
+		u = glm::normalize(glm::cross(VUV, VPN));
+		v = glm::normalize(glm::cross(VPN, u));
+		n = glm::normalize(VPN);
+
+		glutPostRedisplay();
+		break;
+	}
+	case GLUT_KEY_PAGE_DOWN:
+	{
+		// Move down
+		cameraPosition -= v;
+		PRP = PRP_distance_scale[PRP_distance_level] * cameraPosition;
+		VRP -= v;
+		ViewMatrix = glm::lookAt(PRP, VRP, VUV);
+
+		// Update u, v, n of camera coordinates.
+		glm::vec3 VPN = PRP - VRP;
+		u = glm::normalize(glm::cross(VUV, VPN));
+		v = glm::normalize(glm::cross(VPN, u));
+		n = glm::normalize(VPN);
+
+		glutPostRedisplay();
+		break;
+	}
 	}
 }
 
@@ -1030,6 +1153,7 @@ void cleanup(void) {
 void register_callbacks(void) {
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
+	glutSpecialFunc(special);
 	glutReshapeFunc(reshape);
 	glutTimerFunc(100, timer_scene, 0);
 	glutCloseFunc(cleanup);
@@ -1142,8 +1266,20 @@ void initialize_OpenGL(void) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	ViewMatrix = glm::lookAt(PRP_distance_scale[0] * glm::vec3(500.0f, 400.0f, 500.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	//ViewMatrix = glm::lookAt(PRP_distance_scale[0] * glm::vec3(500.0f, 400.0f, 500.0f),
+	//	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	cameraPosition = glm::vec3(500.0f, 400.0f, 500.0f);
+	PRP = PRP_distance_scale[0] * cameraPosition;
+	VRP = glm::vec3(0.0f, 0.0f, 0.0f);
+	VUV = glm::vec3(0.0f, 1.0f, 0.0f);
+	ViewMatrix = glm::lookAt(PRP, VRP, VUV);
+	
+	// Prepare u, v, n of camera coordinates.
+	glm::vec3 VPN = PRP - VRP;	// "View Plane Normal"
+	u = glm::normalize(glm::cross(VUV, VPN));
+	v = glm::normalize(glm::cross(VPN, u));
+	n = glm::normalize(VPN);
+
 	initialize_lights_and_material();
 	initialize_flags();
 
