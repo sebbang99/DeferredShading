@@ -213,14 +213,14 @@ float rotation_angle_tiger = 0.0f;
 	 material_floor.ambient_color[2] = 0.0f;
 	 material_floor.ambient_color[3] = 1.0f;
 
-	 //material_floor.diffuse_color[0] = 0.2f;
-	 //material_floor.diffuse_color[1] = 0.5f;
-	 //material_floor.diffuse_color[2] = 0.2f;
-	 //material_floor.diffuse_color[3] = 1.0f;
-	 material_floor.diffuse_color[0] = 1.0f;	// just for debugging
-	 material_floor.diffuse_color[1] = 1.0f;
-	 material_floor.diffuse_color[2] = 1.0f;
+	 material_floor.diffuse_color[0] = 0.2f;
+	 material_floor.diffuse_color[1] = 0.5f;
+	 material_floor.diffuse_color[2] = 0.2f;
 	 material_floor.diffuse_color[3] = 1.0f;
+	 //material_floor.diffuse_color[0] = 1.0f;	// just for debugging
+	 //material_floor.diffuse_color[1] = 1.0f;
+	 //material_floor.diffuse_color[2] = 1.0f;
+	 //material_floor.diffuse_color[3] = 1.0f;
 
 	 material_floor.specular_color[0] = 0.24f;
 	 material_floor.specular_color[1] = 0.5f;
@@ -434,7 +434,6 @@ void prepare_tiger(void) { // vertices enumerated clockwise
 }
 
 void set_material_tiger(void) {
-	// assume ShaderProgram_TXPS is used
 	glUniform4fv(loc_material_lighting.ambient_color, 1, material_tiger.ambient_color);
 	glUniform4fv(loc_material_lighting.diffuse_color, 1, material_tiger.diffuse_color);
 	glUniform4fv(loc_material_lighting.specular_color, 1, material_tiger.specular_color);
@@ -455,11 +454,16 @@ float PRP_distance_scale[6] = { 0.5f, 1.0f, 2.5f, 5.0f, 10.0f, 20.0f };
 
 void display(void) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1. Geometry pass BEGIN
 	glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// for background, but not needed.
+	//float defalut_pos[4] = { FLT_MAX, FLT_MAX, FLT_MAX, 1.0f };
+	//glClearBufferfv(GL_COLOR, LOC_VERTEX, defalut_pos);
+
 	glUseProgram(h_ShaderProgram_geometry);
 
 		// Temporary disabled 
@@ -1008,7 +1012,7 @@ void display(void) {
 		//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_simple, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
 		//draw_axes();
 
-	//glUseProgram(0);
+	glUseProgram(0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Geometry pass END
 
@@ -1051,7 +1055,7 @@ void display(void) {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);
 
-	//glUseProgram(0);
+	glUseProgram(0);
 	// Lighting pass END
 
 	glutSwapBuffers();
@@ -1088,6 +1092,16 @@ void keyboard(unsigned char key, int x, int y) {
 	}
 
 	switch (key) {
+	case 'z':
+		glUseProgram(h_ShaderProgram_lighting);
+		for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+			light[i].light_on = 1 - light[i].light_on;
+			glUniform1i(loc_light_lighting[i].light_on, light[i].light_on);
+		}
+		glUseProgram(0);
+
+		glutPostRedisplay();
+		break;
 	case 'a': // toggle the animation effect.
 		flag_tiger_animation = 1 - flag_tiger_animation;
 		if (flag_tiger_animation) {
@@ -1508,7 +1522,7 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 	glUseProgram(h_ShaderProgram_lighting);
 
 	glUniform4f(loc_global_ambient_color_lighting, 0.115f, 0.115f, 0.115f, 1.0f);
-	//glUniform4f(loc_global_ambient_color_lighting, 1.0f, 1.0f, 1.0f, 1.0f);
+	//glUniform4f(loc_global_ambient_color_lighting, 1.0f, 1.0f, 1.0f, 1.0f);	// just for debugging
 	for (i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
 		glUniform1i(loc_light_lighting[i].light_on, 0); // turn off all lights initially
 		glUniform4f(loc_light_lighting[i].position, 0.0f, 0.0f, 1.0f, 0.0f);
@@ -1575,6 +1589,9 @@ void initialize_OpenGL(void) {
 
 void set_up_scene_lights(void) {
 
+	// Change this value if you want refresh colors of lights! :)
+	srand(125);
+
 	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
 		light[i].light_on = 1;
 			
@@ -1584,15 +1601,15 @@ void set_up_scene_lights(void) {
 		light[i].position[2] = static_cast<float>(rand() % 1000) - 500.0f;
 		light[i].position[3] = 1.0f;
 		// just for debugging
-		//printf("light %d position : (%f, %f, %f, %f)\n", i, light[i].position[0], light[i].position[1], 
-		//	light[i].position[2], light[i].position[3]);
+		printf("light %d position : (%f, %f, %f, %f)\n", i, light[i].position[0], light[i].position[1], 
+			light[i].position[2], light[i].position[3]);
 
 		light[i].ambient_color[0] = 0.13f; light[i].ambient_color[1] = 0.13f;
 		light[i].ambient_color[2] = 0.13f; light[i].ambient_color[3] = 1.0f;
 
-		light[i].diffuse_color[0] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
-		light[i].diffuse_color[1] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
-		light[i].diffuse_color[2] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
+		light[i].diffuse_color[0] = light[i].specular_color[0] = static_cast<float>(rand() % 100) / 100.0f;
+		light[i].diffuse_color[1] = light[i].specular_color[1] = static_cast<float>(rand() % 100) / 100.0f;
+		light[i].diffuse_color[2] = light[i].specular_color[2] = static_cast<float>(rand() % 100) / 100.0f;
 	}
 
 
