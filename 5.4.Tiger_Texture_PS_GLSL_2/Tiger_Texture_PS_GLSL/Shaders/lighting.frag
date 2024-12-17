@@ -8,9 +8,9 @@
 
 in vec2 tex_coords;
 
-uniform sampler2D u_g_pos;
-uniform sampler2D u_g_norm;
-uniform sampler2D u_g_albedo_spec;
+uniform sampler2D g_pos;
+uniform sampler2D g_norm;
+uniform sampler2D g_albedo_spec;
 
 struct LIGHT {
 	vec4 position; 
@@ -115,14 +115,19 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 
 void main()
 {	
-	vec3 frag_pos = texture(u_g_pos, tex_coords).rgb;
-	vec3 normal = texture(u_g_norm, tex_coords).rgb;
-	float spec = texture(u_g_albedo_spec, tex_coords).a;
+	vec3 frag_pos = texture(g_pos, tex_coords).rgb;
+	vec3 normal = texture(g_norm, tex_coords).rgb;
+	float spec = texture(g_albedo_spec, tex_coords).a;
+
+	if (frag_pos.x > 500.0f || frag_pos.x < -500.0f) {
+		final_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		return;
+	}
 
 	vec4 base_color, shaded_color;
 
 	if (u_flag_texture_mapping) 
-		base_color = vec4(texture(u_g_albedo_spec, tex_coords).rgb, 1.0f);
+		base_color = vec4(texture(g_albedo_spec, tex_coords).rgb, 1.0f);
 	else 
 		base_color = u_material.diffuse_color;
 	// Note meanings of these variables below in the light equation.
@@ -132,4 +137,8 @@ void main()
 	shaded_color = lighting_equation_textured(frag_pos, normalize(normal), base_color);
 
 	final_color = shaded_color;
+
+	// just for debugging pass 1.
+//	final_color = vec4(normal, 1.0f);
+//	final_color = base_color;
 }

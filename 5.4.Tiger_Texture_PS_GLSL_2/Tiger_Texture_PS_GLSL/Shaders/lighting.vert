@@ -6,7 +6,9 @@
  
 #version 330 core
 
-layout (location = 0) in vec3 a_pos;
+// input vertex attributes
+//		: quad's position, texture coordinates.
+layout (location = 0) in vec3 a_position;
 layout (location = 1) in vec2 a_tex_coords;
 
 out vec2 tex_coords;
@@ -14,5 +16,5 @@ out vec2 tex_coords;
 void main()
 {
 	tex_coords = a_tex_coords;
-	gl_Position = vec4(a_pos, 1.0f);	// which coord? should be WC for FS.
+	gl_Position = vec4(a_position, 1.0f);
 }

@@ -8,10 +8,10 @@
 
 #include "Shaders/LoadShaders.h"
 #include "My_Shading.h"
-GLuint h_ShaderProgram_simple, h_ShaderProgram_TXPS; // handles to shader programs
+//GLuint h_ShaderProgram_simple, h_ShaderProgram_TXPS; // handles to shader programs
 GLuint h_ShaderProgram_geometry, h_ShaderProgram_lighting;
 
-#define NUMBER_OF_LIGHT_SUPPORTED 50 
+#define NUMBER_OF_LIGHT_SUPPORTED 4
 
 // for simple shaders
 //GLint loc_ModelViewProjectionMatrix_simple, loc_primitive_color;
@@ -28,13 +28,13 @@ GLuint h_ShaderProgram_geometry, h_ShaderProgram_lighting;
 GLint loc_ModelViewProjectionMatrix_geometry;
 GLint loc_ModelMatrix_geometry, loc_ModelMatrixInvTrans_geometry;
 GLint loc_texture_geometry;
-loc_Material_Parameters loc_material_geometry;
 
 // location of uniform variables for lighting pass shaders
 GLint loc_g_pos, loc_g_norm, loc_g_albedo_spec;
 GLint loc_global_ambient_color_lighting;
 loc_light_Parameters loc_light_lighting[NUMBER_OF_LIGHT_SUPPORTED];
 GLint loc_flag_texture_mapping_lighting;
+loc_Material_Parameters loc_material_lighting;
 
 unsigned int g_buffer;
 unsigned int g_pos, g_norm, g_albedo_spec;
@@ -128,31 +128,33 @@ int flag_tiger_animation, flag_polygon_fill;
 int cur_frame_tiger = 0;
 float rotation_angle_tiger = 0.0f;
 
+// temporary disabled.
 // axes object
-GLuint axes_VBO, axes_VAO;
-GLfloat axes_vertices[6][3] = {
-	{ 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f },
-	{ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }
-};
-GLfloat axes_color[3][3] = { { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
+//GLuint axes_VBO, axes_VAO;
+//GLfloat axes_vertices[6][3] = {
+//	{ 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f },
+//	{ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }
+//};
+//GLfloat axes_color[3][3] = { { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
 
-void prepare_axes(void) { // draw coordinate axes
-	// initialize vertex buffer object
-	glGenBuffers(1, &axes_VBO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, axes_VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(axes_vertices), &axes_vertices[0][0], GL_STATIC_DRAW);
-
-	// initialize vertex array object
-	glGenVertexArrays(1, &axes_VAO);
-	glBindVertexArray(axes_VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, axes_VBO);
-	glVertexAttribPointer(LOC_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-}
+//void prepare_axes(void) { 
+//	// draw coordinate axes
+//	// initialize vertex buffer object
+//	glGenBuffers(1, &axes_VBO);
+//
+//	glBindBuffer(GL_ARRAY_BUFFER, axes_VBO);
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(axes_vertices), &axes_vertices[0][0], GL_STATIC_DRAW);
+//
+//	// initialize vertex array object
+//	glGenVertexArrays(1, &axes_VAO);
+//	glBindVertexArray(axes_VAO);
+//
+//	glBindBuffer(GL_ARRAY_BUFFER, axes_VBO);
+//	glVertexAttribPointer(LOC_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+//	glEnableVertexAttribArray(0);
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//	glBindVertexArray(0);
+//}
 
  //void draw_axes(void) {
 	// // assume ShaderProgram_simple is used
@@ -251,11 +253,11 @@ void prepare_axes(void) { // draw coordinate axes
 
  void set_material_floor(void) {
 	 // assume ShaderProgram_TXPS is used
-	 glUniform4fv(loc_material_geometry.ambient_color, 1, material_floor.ambient_color);
-	 glUniform4fv(loc_material_geometry.diffuse_color, 1, material_floor.diffuse_color);
-	 glUniform4fv(loc_material_geometry.specular_color, 1, material_floor.specular_color);
-	 glUniform1f(loc_material_geometry.specular_exponent, material_floor.specular_exponent);
-	 glUniform4fv(loc_material_geometry.emissive_color, 1, material_floor.emissive_color);
+	 glUniform4fv(loc_material_lighting.ambient_color, 1, material_floor.ambient_color);
+	 glUniform4fv(loc_material_lighting.diffuse_color, 1, material_floor.diffuse_color);
+	 glUniform4fv(loc_material_lighting.specular_color, 1, material_floor.specular_color);
+	 glUniform1f(loc_material_lighting.specular_exponent, material_floor.specular_exponent);
+	 glUniform4fv(loc_material_lighting.emissive_color, 1, material_floor.emissive_color);
  }
 
  void draw_floor(void) {
@@ -426,11 +428,11 @@ void prepare_tiger(void) { // vertices enumerated clockwise
 
 void set_material_tiger(void) {
 	// assume ShaderProgram_TXPS is used
-	glUniform4fv(loc_material_geometry.ambient_color, 1, material_tiger.ambient_color);
-	glUniform4fv(loc_material_geometry.diffuse_color, 1, material_tiger.diffuse_color);
-	glUniform4fv(loc_material_geometry.specular_color, 1, material_tiger.specular_color);
-	glUniform1f(loc_material_geometry.specular_exponent, material_tiger.specular_exponent);
-	glUniform4fv(loc_material_geometry.emissive_color, 1, material_tiger.emissive_color);
+	glUniform4fv(loc_material_lighting.ambient_color, 1, material_tiger.ambient_color);
+	glUniform4fv(loc_material_lighting.diffuse_color, 1, material_tiger.diffuse_color);
+	glUniform4fv(loc_material_lighting.specular_color, 1, material_tiger.specular_color);
+	glUniform1f(loc_material_lighting.specular_exponent, material_tiger.specular_exponent);
+	glUniform4fv(loc_material_lighting.emissive_color, 1, material_tiger.emissive_color);
 }
 
 void draw_tiger(void) {
@@ -446,12 +448,12 @@ float PRP_distance_scale[6] = { 0.5f, 1.0f, 2.5f, 5.0f, 10.0f, 20.0f };
 
 void display(void) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1. Geometry pass BEGIN
 	glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
-
-		glUseProgram(h_ShaderProgram_geometry);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(h_ShaderProgram_geometry);
 
 		// Temporary disabled 
 		//ModelMatrix = glm::mat4(1.0f);
@@ -1017,8 +1019,7 @@ void display(void) {
 		//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_simple, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
 		//draw_axes();
 
-		glUseProgram(0);
-
+	//glUseProgram(0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Geometry pass END
 
@@ -1029,10 +1030,13 @@ void display(void) {
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g_pos);
+		glUniform1i(loc_g_pos, 0);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, g_norm);
+		glUniform1i(loc_g_norm, 1);
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
+		glUniform1i(loc_g_albedo_spec, 2);
 
 		if (quad_VAO == 0)
 		{
@@ -1058,7 +1062,7 @@ void display(void) {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);
 
-	glUseProgram(0);
+	//glUseProgram(0);
 	// Lighting pass END
 
 	glutSwapBuffers();
@@ -1126,66 +1130,66 @@ void keyboard(unsigned char key, int x, int y) {
 		glUseProgram(0);
 		glutPostRedisplay();
 		break;
-	case 'y': // Change the floor texture's magnification filter.
-		flag_floor_mag_filter = (flag_floor_mag_filter + 1) % 2;
-		glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_FLOOR);
-		if (flag_floor_mag_filter == 0) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
-			fprintf(stdout, "^^^ Mag filter for floor: GL_NEAREST.\n");
-		}
-		else {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			fprintf(stdout, "^^^ Mag filter for floor: GL_LINEAR.\n");
-		}
-		glutPostRedisplay();
-		break;
-	case 'u': // Change the floor texture's minification filter.
-		flag_floor_min_filter = (flag_floor_min_filter + 1) % 3;
-		glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_FLOOR);
-		if (flag_floor_min_filter == 0) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			fprintf(stdout, "^^^ Min filter for floor: GL_NEAREST.\n");
-		}
-		else if (flag_floor_min_filter == 1) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			fprintf(stdout, "^^^ Min filter for floor: GL_LINEAR.\n");
-		}
-		else {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			fprintf(stdout, "^^^ Min filter for floor: GL_LINEAR_MIPMAP_LINEAR.\n");
-		}
-		glutPostRedisplay();
-		break;
-	case 'i': // Change the tiger texture's magnification filter.
-		flag_tiger_mag_filter = (flag_tiger_mag_filter + 1) % 2;
-		glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_TIGER);
-		if (flag_tiger_mag_filter == 0) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			fprintf(stdout, "^^^ Mag filter for tiger: GL_NEAREST.\n");
-		}
-		else {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			fprintf(stdout, "^^^ Mag filter for tiger: GL_LINEAR.\n");
-		}
-		glutPostRedisplay();
-		break;
-	case 'o': // Change the tiger texture's minification filter.
-		flag_tiger_min_filter = (flag_tiger_min_filter + 1) % 3;
-		glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_TIGER);
-		if (flag_tiger_min_filter == 0) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			fprintf(stdout, "^^^ Min filter for tiger: GL_NEAREST.\n");
-		}
-		else if (flag_tiger_min_filter == 1) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			fprintf(stdout, "^^^ Min filter for tiger: GL_LINEAR.\n");
-		}
-		else {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			fprintf(stdout, "^^^ Min filter for tiger: GL_LINEAR_MIPMAP_LINEAR.\n");
-		}
-		glutPostRedisplay();
-		break;
+	//case 'y': // Change the floor texture's magnification filter.
+	//	flag_floor_mag_filter = (flag_floor_mag_filter + 1) % 2;
+	//	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_FLOOR);
+	//	if (flag_floor_mag_filter == 0) {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+	//		fprintf(stdout, "^^^ Mag filter for floor: GL_NEAREST.\n");
+	//	}
+	//	else {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//		fprintf(stdout, "^^^ Mag filter for floor: GL_LINEAR.\n");
+	//	}
+	//	glutPostRedisplay();
+	//	break;
+	//case 'u': // Change the floor texture's minification filter.
+	//	flag_floor_min_filter = (flag_floor_min_filter + 1) % 3;
+	//	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_FLOOR);
+	//	if (flag_floor_min_filter == 0) {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//		fprintf(stdout, "^^^ Min filter for floor: GL_NEAREST.\n");
+	//	}
+	//	else if (flag_floor_min_filter == 1) {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//		fprintf(stdout, "^^^ Min filter for floor: GL_LINEAR.\n");
+	//	}
+	//	else {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//		fprintf(stdout, "^^^ Min filter for floor: GL_LINEAR_MIPMAP_LINEAR.\n");
+	//	}
+	//	glutPostRedisplay();
+	//	break;
+	//case 'i': // Change the tiger texture's magnification filter.
+	//	flag_tiger_mag_filter = (flag_tiger_mag_filter + 1) % 2;
+	//	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_TIGER);
+	//	if (flag_tiger_mag_filter == 0) {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//		fprintf(stdout, "^^^ Mag filter for tiger: GL_NEAREST.\n");
+	//	}
+	//	else {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//		fprintf(stdout, "^^^ Mag filter for tiger: GL_LINEAR.\n");
+	//	}
+	//	glutPostRedisplay();
+	//	break;
+	//case 'o': // Change the tiger texture's minification filter.
+	//	flag_tiger_min_filter = (flag_tiger_min_filter + 1) % 3;
+	//	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_TIGER);
+	//	if (flag_tiger_min_filter == 0) {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//		fprintf(stdout, "^^^ Min filter for tiger: GL_NEAREST.\n");
+	//	}
+	//	else if (flag_tiger_min_filter == 1) {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//		fprintf(stdout, "^^^ Min filter for tiger: GL_LINEAR.\n");
+	//	}
+	//	else {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//		fprintf(stdout, "^^^ Min filter for tiger: GL_LINEAR_MIPMAP_LINEAR.\n");
+	//	}
+	//	glutPostRedisplay();
+	//	break;
 	case 'c':
 		flag_cull_face = (flag_cull_face + 1) % 3;
 		switch (flag_cull_face) {
@@ -1363,8 +1367,8 @@ void reshape(int width, int height) {
 }
 
 void cleanup(void) {
-	glDeleteVertexArrays(1, &axes_VAO); 
-	glDeleteBuffers(1, &axes_VBO);
+	//glDeleteVertexArrays(1, &axes_VAO); 
+	//glDeleteBuffers(1, &axes_VBO);
 
 	glDeleteVertexArrays(1, &rectangle_VAO);
 	glDeleteBuffers(1, &rectangle_VBO);
@@ -1473,9 +1477,9 @@ void prepare_shader_program(void) {
 	// lighting
 	{
 		h_ShaderProgram_lighting = LoadShaders(shader_info_lighting);
-		loc_g_pos = glGetUniformLocation(h_ShaderProgram_lighting, "u_g_pos");
-		loc_g_norm = glGetUniformLocation(h_ShaderProgram_lighting, "u_g_norm");
-		loc_g_albedo_spec = glGetUniformLocation(h_ShaderProgram_lighting, "u_g_albedo_spec");
+		loc_g_pos = glGetUniformLocation(h_ShaderProgram_lighting, "g_pos");
+		loc_g_norm = glGetUniformLocation(h_ShaderProgram_lighting, "g_norm");
+		loc_g_albedo_spec = glGetUniformLocation(h_ShaderProgram_lighting, "g_albedo_spec");
 		loc_global_ambient_color_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_global_ambient_color");
 
 		for (i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
@@ -1499,11 +1503,11 @@ void prepare_shader_program(void) {
 			loc_light_lighting[i].light_attenuation_factors = glGetUniformLocation(h_ShaderProgram_lighting, string);
 		}
 
-		loc_material_geometry.ambient_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.ambient_color");
-		loc_material_geometry.diffuse_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.diffuse_color");
-		loc_material_geometry.specular_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.specular_color");
-		loc_material_geometry.emissive_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.emissive_color");
-		loc_material_geometry.specular_exponent = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.specular_exponent");
+		loc_material_lighting.ambient_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.ambient_color");
+		loc_material_lighting.diffuse_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.diffuse_color");
+		loc_material_lighting.specular_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.specular_color");
+		loc_material_lighting.emissive_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.emissive_color");
+		loc_material_lighting.specular_exponent = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.specular_exponent");
 
 		loc_flag_texture_mapping_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_flag_texture_mapping");
 	}
@@ -1533,11 +1537,11 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 		glUniform4f(loc_light_lighting[i].light_attenuation_factors, 1.0f, 0.0014f, 0.000007f, 0.0f); // .w == 0.0f for no light attenuation
 	}
 
-	glUniform4f(loc_material_geometry.ambient_color, 0.2f, 0.2f, 0.2f, 1.0f);
-	glUniform4f(loc_material_geometry.diffuse_color, 0.8f, 0.8f, 0.8f, 1.0f);
-	glUniform4f(loc_material_geometry.specular_color, 0.0f, 0.0f, 0.0f, 1.0f);
-	glUniform4f(loc_material_geometry.emissive_color, 0.0f, 0.0f, 0.0f, 1.0f);
-	glUniform1f(loc_material_geometry.specular_exponent, 0.0f); // [0.0, 128.0]
+	glUniform4f(loc_material_lighting.ambient_color, 0.2f, 0.2f, 0.2f, 1.0f);
+	glUniform4f(loc_material_lighting.diffuse_color, 0.8f, 0.8f, 0.8f, 1.0f);
+	glUniform4f(loc_material_lighting.specular_color, 0.0f, 0.0f, 0.0f, 1.0f);
+	glUniform4f(loc_material_lighting.emissive_color, 0.0f, 0.0f, 0.0f, 1.0f);
+	glUniform1f(loc_material_lighting.specular_exponent, 0.0f); // [0.0, 128.0]
 
 	glUseProgram(0);
 }
@@ -1656,7 +1660,7 @@ void set_up_scene_lights(void) {
 }
 
 void prepare_scene(void) {
-	prepare_axes();
+	//prepare_axes();	
 	prepare_floor();
 	prepare_tiger();
 	set_up_scene_lights();
@@ -1704,12 +1708,13 @@ void prepare_gbuffer(void) {
 
 void initialize_renderer(void) {
 	register_callbacks();
-	prepare_shader_program();
-	initialize_OpenGL();
-	prepare_scene();
 
 	// for deferred shading
 	prepare_gbuffer();
+
+	prepare_shader_program();
+	initialize_OpenGL();
+	prepare_scene();
 }
 
 void initialize_glew(void) {
