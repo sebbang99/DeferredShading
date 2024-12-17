@@ -119,10 +119,10 @@ void main()
 	vec3 normal = texture(g_norm, tex_coords).rgb;
 	float spec = texture(g_albedo_spec, tex_coords).a;
 
-	if (frag_pos.x > 500.0f || frag_pos.x < -500.0f) {
-		final_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-		return;
-	}
+//	if (frag_pos.x > 500.0f || frag_pos.x < -500.0f) {
+//		final_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//		return;
+//	}
 
 	vec4 base_color, shaded_color;
 
@@ -139,6 +139,7 @@ void main()
 	final_color = shaded_color;
 
 	// just for debugging pass 1.
+//	final_color = vec4(frag_pos, 1.0f);
 //	final_color = vec4(normal, 1.0f);
 //	final_color = base_color;
 }
