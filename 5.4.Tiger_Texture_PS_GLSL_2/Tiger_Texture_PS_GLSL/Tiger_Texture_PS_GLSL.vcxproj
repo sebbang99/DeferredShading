@@ -163,6 +163,10 @@
     <ClInclude Include="Shaders\LoadShaders.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\geometry.frag" />
+    <None Include="Shaders\geometry.vert" />
+    <None Include="Shaders\lighting.frag" />
+    <None Include="Shaders\lighting.vert" />
     <None Include="Shaders\Phong_Tx.frag" />
     <None Include="Shaders\Phong_Tx.vert" />
     <None Include="Shaders\simple.frag" />

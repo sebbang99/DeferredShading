@@ -43,5 +43,17 @@
     <None Include="Shaders\simple.vert">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="Shaders\geometry.frag">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="Shaders\geometry.vert">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="Shaders\lighting.frag">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="Shaders\lighting.vert">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

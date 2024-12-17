@@ -1,11 +1,21 @@
-#version 430
+/*
+ * Real Time Rendering 2024
+ *
+ * SEHEE CHO
+ */
+ 
+#version 330 core
 
-// #define DISPLAY_LOD
+in vec2 tex_coords;
+
+uniform sampler2D u_g_pos;
+uniform sampler2D u_g_norm;
+uniform sampler2D u_g_albedo_spec;
 
 struct LIGHT {
-	vec4 position; // point or direction in WC
+	vec4 position; 
 	vec4 ambient_color, diffuse_color, specular_color;
-	vec4 light_attenuation_factors; // compute this effect only if .w != 0.0f
+	vec4 light_attenuation_factors; 
 	vec3 spot_direction;
 	float spot_exponent;
 	float spot_cutoff_angle;
@@ -28,25 +38,16 @@ uniform MATERIAL u_material;
 // for local illumination
 #define LIGHT_RANGE 100.0f
 
-uniform sampler2D u_base_texture;
-
 uniform bool u_flag_texture_mapping = true;
-uniform bool u_flag_fog = false;
 
 const float zero_f = 0.0f;
 const float one_f = 1.0f;
 
-//in vec3 v_position_EC;
-in vec3 v_position_WC;
-//in vec3 v_normal_EC;
-in vec3 v_normal_WC;
-in vec2 v_tex_coord;
 layout (location = 0) out vec4 final_color;
 
 vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) {
 	vec4 color_sum;
 	float local_scale_factor, tmp_float; 
-//	vec3 L_EC;
 	vec3 L_WC;
 
 	color_sum = u_material.emissive_color + u_global_ambient_color * base_color;
@@ -71,7 +72,6 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 			// for local illumination.
 			if (sqrt(dot(L_WC, L_WC)) > LIGHT_RANGE) {	// should be upgraded for efficiency.
 				local_scale_factor = zero_f;
-//				return vec4(0.0f, 0.0f, 1.0f, 1.0f);
 			}
 
 			L_WC = normalize(L_WC);
@@ -113,54 +113,23 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
  	return color_sum;
 }
 
-// May contol these fog parameters through uniform variables
-#define FOG_COLOR vec4(0.7f, 0.7f, 0.7f, 1.0f)
-#define FOG_NEAR_DISTANCE 350.0f
-#define FOG_FAR_DISTANCE 700.0f
+void main()
+{	
+	vec3 frag_pos = texture(u_g_pos, tex_coords).rgb;
+	vec3 normal = texture(u_g_norm, tex_coords).rgb;
+	float spec = texture(u_g_albedo_spec, tex_coords).a;
 
-void main(void) {
 	vec4 base_color, shaded_color;
-	float fog_factor;
 
-#if (__VERSION__ >= 400) && defined(DISPLAY_LOD)
-    // Just to see the computed mipmap level for debugging purposes. Remove this part for a regular rendering.
-	float mipmap_level;
-
- 	mipmap_level = textureQueryLod(u_base_texture, v_tex_coord).x;
- 	//  base_color = textureLod(u_base_texture, v_tex_coord, mipmap_level); 
-
-	if (mipmap_level < 0.5f) 
-		final_color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	else if (mipmap_level < 1.5f) 
-		final_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	else if (mipmap_level < 2.5f)
-		final_color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-	else if (mipmap_level < 3.5f)
-		final_color = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-	else if (mipmap_level < 4.5f)
-		final_color = vec4(0.0f, 1.0f, 1.0f, 1.0f);
-	else if (mipmap_level < 5.5f)
-		final_color = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-	else if (mipmap_level < 6.5f)
-		final_color = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-	else 
-		final_color = vec4(0.5f, 0.5f, 0.5f, 1.0f);
-#else
-// For a normal rendering ...
 	if (u_flag_texture_mapping) 
-		base_color = texture(u_base_texture, v_tex_coord);
+		base_color = vec4(texture(u_g_albedo_spec, tex_coords).rgb, 1.0f);
 	else 
 		base_color = u_material.diffuse_color;
+	// Note meanings of these variables below in the light equation.
+	// base_color	: kd
+	// spec			: ks
 
-	shaded_color = lighting_equation_textured(v_position_WC, normalize(v_normal_WC), base_color);
+	shaded_color = lighting_equation_textured(frag_pos, normalize(normal), base_color);
 
-	if (u_flag_fog) {
-  	  	fog_factor = (FOG_FAR_DISTANCE - length(v_position_WC.xyz))/(FOG_FAR_DISTANCE - FOG_NEAR_DISTANCE);  		
-//       fog_factor = (FOG_FAR_DISTANCE + v_position_EC.z)/(FOG_FAR_DISTANCE - FOG_NEAR_DISTANCE);
-		fog_factor = clamp(fog_factor, 0.0f, 1.0f);
-		final_color = mix(FOG_COLOR, shaded_color, fog_factor);
-	}
-	else 
-		final_color = shaded_color;
-#endif
+	final_color = shaded_color;
 }

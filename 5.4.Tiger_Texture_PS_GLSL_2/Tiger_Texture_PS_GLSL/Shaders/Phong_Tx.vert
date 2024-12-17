@@ -1,8 +1,6 @@
 #version 430
 
 uniform mat4 u_ModelViewProjectionMatrix;
-uniform mat4 u_ModelViewMatrix;
-uniform mat3 u_ModelViewMatrixInvTrans; 
 uniform mat4 u_ModelMatrix;
 uniform mat3 u_ModelMatrixInvTrans;
 
