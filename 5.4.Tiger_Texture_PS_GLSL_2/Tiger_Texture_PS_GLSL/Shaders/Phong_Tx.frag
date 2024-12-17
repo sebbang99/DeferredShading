@@ -21,12 +21,12 @@ struct MATERIAL {
 };
 
 uniform vec4 u_global_ambient_color;
-#define NUMBER_OF_LIGHTS_SUPPORTED 4
+#define NUMBER_OF_LIGHTS_SUPPORTED 50
 uniform LIGHT u_light[NUMBER_OF_LIGHTS_SUPPORTED];
 uniform MATERIAL u_material;
 
 // for local illumination
-#define LIGHT_RANGE 200.0f
+#define LIGHT_RANGE 100.0f
 
 uniform sampler2D u_base_texture;
 
@@ -94,13 +94,10 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 		}	
 
 		if (local_scale_factor > zero_f) {		
-//			return vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
 		 	vec4 local_color_sum = u_light[i].ambient_color * u_material.ambient_color;
 
 			tmp_float = dot(N_WC, L_WC);  
 			if (tmp_float > zero_f) {  
-//				return vec4(1.0f, 0.0f, 0.0f, 1.0f);
 				local_color_sum += u_light[i].diffuse_color*base_color*tmp_float;
 			
 				vec3 H_WC = normalize(L_WC - normalize(P_WC));
