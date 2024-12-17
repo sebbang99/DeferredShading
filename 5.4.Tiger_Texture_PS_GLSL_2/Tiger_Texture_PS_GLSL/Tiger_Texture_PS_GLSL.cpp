@@ -719,274 +719,224 @@ void display(void) {
 		//////////// +16 //////////////////////////////////////////////////////////////////////////
 		set_material_tiger();
 		{		
-			//glUniform1i(loc_texture, TEXTURE_ID_TIGER);
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(200.0f, 100.0f, 0.0f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			glUniform1i(loc_texture_geometry, TEXTURE_ID_TIGER);
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(200.0f, 100.0f, 0.0f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 1
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 1
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-200.0f, 100.0f, 0.0f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-200.0f, 100.0f, 0.0f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 2
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 2
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(100.0f, 100.0f, 0.0f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(100.0f, 100.0f, 0.0f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 3
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 3
 
-			//glUniform1i(loc_texture, TEXTURE_ID_GRASS);
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-100.0f, 100.0f, 0.0f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			glUniform1i(loc_texture_geometry, TEXTURE_ID_GRASS);
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-100.0f, 100.0f, 0.0f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 4
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 4
 
-			//glUniform1i(loc_texture, TEXTURE_ID_GRASS);
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 100.0f, 200.0f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			glUniform1i(loc_texture_geometry, TEXTURE_ID_GRASS);
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 100.0f, 200.0f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
+			ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 5
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 5
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 100.0f, -200.0f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 100.0f, -200.0f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 6
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 6
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 100.0f, 100.0f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 100.0f, 100.0f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 7
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 7
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 100.0f, -100.0f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 100.0f, -100.0f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 8
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 8
 
-			//glUniform1i(loc_texture, TEXTURE_ID_BIRDS);
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(200.0f, 100.0f, 200.0f));
-			//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			glUniform1i(loc_texture_geometry, TEXTURE_ID_BIRDS);
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(200.0f, 100.0f, 200.0f));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 9
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 9
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-200.0f, 100.0f, -200.0f));
-			//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-200.0f, 100.0f, -200.0f));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 10
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 10
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(100.0f, 100.0f, 100.0f));
-			//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(100.0f, 100.0f, 100.0f));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 11
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 11
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-100.0f, 100.0f, -100.0f));
-			//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-100.0f, 100.0f, -100.0f));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 12
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 12
 
-			//glUniform1i(loc_texture, TEXTURE_ID_APPLES);
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-150.0f, 150.0f, -150.0f));
-			//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			glUniform1i(loc_texture_geometry, TEXTURE_ID_APPLES);
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-150.0f, 150.0f, -150.0f));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 13
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 13
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(150.0f, 150.0f, -150.0f));
-			//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(150.0f, 150.0f, -150.0f));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 14
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 14
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(150.0f, 150.0f, -150.0f));
-			//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(150.0f, 150.0f, -150.0f));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 15
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
+			draw_tiger(); // 15
 
-			//ModelMatrix = glm::mat4(1.0f);
-			//ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
-			//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-150.0f, 150.0f, -150.0f));
-			//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-			//ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
-
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_TXPS, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelViewMatrix_TXPS, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelViewMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_TXPS, 1, GL_FALSE, &ModelMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_TXPS, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
-			//draw_tiger(); // 16
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::rotate(ModelMatrix, -rotation_angle_tiger, glm::vec3(0.0f, 1.0f, 0.0f));
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-150.0f, 150.0f, -150.0f));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+			ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
+ 
+			draw_tiger(); // 16
 
 		}
 
@@ -1601,8 +1551,8 @@ void set_up_scene_lights(void) {
 		light[i].position[2] = static_cast<float>(rand() % 1000) - 500.0f;
 		light[i].position[3] = 1.0f;
 		// just for debugging
-		printf("light %d position : (%f, %f, %f, %f)\n", i, light[i].position[0], light[i].position[1], 
-			light[i].position[2], light[i].position[3]);
+		//printf("light %d position : (%f, %f, %f, %f)\n", i, light[i].position[0], light[i].position[1], 
+		//	light[i].position[2], light[i].position[3]);
 
 		light[i].ambient_color[0] = 0.13f; light[i].ambient_color[1] = 0.13f;
 		light[i].ambient_color[2] = 0.13f; light[i].ambient_color[3] = 1.0f;
