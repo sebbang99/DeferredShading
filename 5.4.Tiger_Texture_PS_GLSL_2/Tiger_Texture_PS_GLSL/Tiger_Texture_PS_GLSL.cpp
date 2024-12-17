@@ -981,6 +981,19 @@ void display(void) {
 		glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
 		glUniform1i(loc_g_albedo_spec, TEXTURE_ID_G_ALBEDO_SPEC);
 
+		for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+			// then calculate radius of light volume/sphere
+			const float maxBrightness = std::fmaxf(std::fmaxf(light[i].diffuse_color[0], light[i].diffuse_color[1]), 
+				light[i].diffuse_color[2]);	// diffuse only?
+
+			float constant = light[i].light_attenuation_factors[0];
+			float linear = light[i].light_attenuation_factors[1];
+			float quadratic = light[i].light_attenuation_factors[2];
+
+			float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (255.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
+			glUniform1f(loc_light_lighting[i].radius, radius);
+		}
+
 		if (quad_VAO == 0)
 		{
 			float quadVertices[] = {
@@ -1454,6 +1467,8 @@ void prepare_shader_program(void) {
 			loc_light_lighting[i].spot_cutoff_angle = glGetUniformLocation(h_ShaderProgram_lighting, string);
 			sprintf(string, "u_light[%d].light_attenuation_factors", i);
 			loc_light_lighting[i].light_attenuation_factors = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light[%d].radius", i);
+			loc_light_lighting[i].radius = glGetUniformLocation(h_ShaderProgram_lighting, string);
 		}
 
 		loc_material_lighting.ambient_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.ambient_color");

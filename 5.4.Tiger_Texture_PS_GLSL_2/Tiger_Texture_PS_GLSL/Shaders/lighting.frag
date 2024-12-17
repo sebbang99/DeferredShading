@@ -20,6 +20,7 @@ struct LIGHT {
 	float spot_exponent;
 	float spot_cutoff_angle;
 	bool light_on;
+	float radius;
 };
 
 struct MATERIAL {
@@ -66,6 +67,12 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 				tmp_vec4.z = dot(L_WC, L_WC);
 				tmp_vec4.y = sqrt(tmp_vec4.z);
 				tmp_vec4.w = zero_f;
+
+				// for method 3-1
+				if (tmp_vec4.y > u_light[i].radius) {
+					continue;
+				}
+
 				local_scale_factor = one_f/dot(tmp_vec4, u_light[i].light_attenuation_factors);
 			}
 
