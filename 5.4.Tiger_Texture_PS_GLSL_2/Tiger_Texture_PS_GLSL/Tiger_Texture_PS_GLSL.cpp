@@ -1057,6 +1057,16 @@ void keyboard(unsigned char key, int x, int y) {
 	}
 
 	switch (key) {
+	case 'z':
+		glUseProgram(h_ShaderProgram_TXPS);
+		for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+			light[i].light_on = 1 - light[i].light_on;
+			glUniform1i(loc_light[i].light_on, light[i].light_on);
+		}
+		glUseProgram(0);
+
+		glutPostRedisplay();
+		break;
 	case 'a': // toggle the animation effect.
 		flag_tiger_animation = 1 - flag_tiger_animation;
 		if (flag_tiger_animation) {
@@ -1426,7 +1436,7 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 		glUniform3f(loc_light[i].spot_direction, 0.0f, 0.0f, -1.0f);
 		glUniform1f(loc_light[i].spot_exponent, 0.0f); // [0.0, 128.0]
 		glUniform1f(loc_light[i].spot_cutoff_angle, 180.0f); // [0.0, 90.0] or 180.0 (180.0 for no spot light effect)
-		glUniform4f(loc_light[i].light_attenuation_factors, 1.0f, 0.0014f, 0.000007f, 0.0f); // .w == 0.0f for no light attenuation
+		glUniform4f(loc_light[i].light_attenuation_factors, 1.0f, 0.014f, 0.0007f, 1.0f); // .w == 0.0f for no light attenuation
 	}
 
 	glUniform4f(loc_material.ambient_color, 0.2f, 0.2f, 0.2f, 1.0f);
@@ -1492,9 +1502,9 @@ void set_up_scene_lights(void) {
 		light[i].ambient_color[0] = 0.13f; light[i].ambient_color[1] = 0.13f;
 		light[i].ambient_color[2] = 0.13f; light[i].ambient_color[3] = 1.0f;
 
-		light[i].diffuse_color[0] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
-		light[i].diffuse_color[1] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
-		light[i].diffuse_color[2] = light[1].specular_color[i] = static_cast<float>(rand() % 100) / 100.0f;
+		light[i].diffuse_color[0] = light[i].specular_color[0] = static_cast<float>(rand() % 100) / 100.0f;
+		light[i].diffuse_color[1] = light[i].specular_color[1] = static_cast<float>(rand() % 100) / 100.0f;
+		light[i].diffuse_color[2] = light[i].specular_color[2] = static_cast<float>(rand() % 100) / 100.0f;
 	}
 
 
