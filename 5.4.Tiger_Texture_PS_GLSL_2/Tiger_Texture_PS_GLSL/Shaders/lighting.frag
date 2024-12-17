@@ -36,7 +36,7 @@ uniform LIGHT u_light[NUMBER_OF_LIGHTS_SUPPORTED];
 uniform MATERIAL u_material;
 
 // for local illumination
-#define LIGHT_RANGE 100.0f
+//#define LIGHT_RANGE 100.0f
 
 uniform bool u_flag_texture_mapping = true;
 
@@ -70,9 +70,9 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 			}
 
 			// for local illumination.
-			if (sqrt(dot(L_WC, L_WC)) > LIGHT_RANGE) {	// should be upgraded for efficiency.
-				local_scale_factor = zero_f;
-			}
+//			if (sqrt(dot(L_WC, L_WC)) > LIGHT_RANGE) {	// should be upgraded for efficiency.
+//				local_scale_factor = zero_f;
+//			}
 
 			L_WC = normalize(L_WC);
 

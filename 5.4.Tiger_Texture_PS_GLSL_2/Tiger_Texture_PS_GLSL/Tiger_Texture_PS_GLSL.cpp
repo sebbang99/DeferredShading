@@ -1488,7 +1488,7 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 		glUniform3f(loc_light_lighting[i].spot_direction, 0.0f, 0.0f, -1.0f);
 		glUniform1f(loc_light_lighting[i].spot_exponent, 0.0f); // [0.0, 128.0]
 		glUniform1f(loc_light_lighting[i].spot_cutoff_angle, 180.0f); // [0.0, 90.0] or 180.0 (180.0 for no spot light effect)
-		glUniform4f(loc_light_lighting[i].light_attenuation_factors, 1.0f, 0.0014f, 0.000007f, 0.0f); // .w == 0.0f for no light attenuation
+		glUniform4f(loc_light_lighting[i].light_attenuation_factors, 1.0f, 0.014f, 0.0007f, 1.0f); // .w == 0.0f for no light attenuation
 	}
 
 	glUniform4f(loc_material_lighting.ambient_color, 0.2f, 0.2f, 0.2f, 1.0f);
