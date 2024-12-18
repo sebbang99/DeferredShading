@@ -149,4 +149,6 @@ void main()
 //	final_color = vec4(frag_pos, 1.0f);
 //	final_color = vec4(normal, 1.0f);
 //	final_color = base_color;
+//	final_color = vec4(tex_coords, 0.0f, 1.0f);
+//	final_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }

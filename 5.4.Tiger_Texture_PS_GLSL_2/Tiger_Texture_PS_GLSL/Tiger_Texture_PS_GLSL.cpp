@@ -35,9 +35,11 @@ GLint loc_global_ambient_color_lighting;
 loc_light_Parameters loc_light_lighting[NUMBER_OF_LIGHT_SUPPORTED];
 GLint loc_flag_texture_mapping_lighting;
 loc_Material_Parameters loc_material_lighting;
+GLint loc_ModelViewProjectionMatrix_lighting;
 
 unsigned int g_buffer;
 unsigned int g_pos, g_norm, g_albedo_spec;
+
 unsigned int quad_VAO = 0;
 unsigned int quad_VBO;
 
@@ -469,7 +471,7 @@ void prepare_sphere() {
 	glGenBuffers(1, &sphere_VBO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, sphere_VBO);
-	glBufferData(GL_ARRAY_BUFFER, sphere_n_triangles * n_bytes_per_triangle, sphere_vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sphere_n_triangles * n_bytes_per_triangle, sphere_vertices, GL_STATIC_DRAW);	// If the 3rd arg is NULL, then it only performs memory allocation.
 
 	//glBufferSubData(GL_ARRAY_BUFFER, 0,
 	//	sphere_n_triangles * n_bytes_per_triangle, sphere_vertices);
@@ -481,7 +483,7 @@ void prepare_sphere() {
 	glGenVertexArrays(1, &sphere_VAO);
 	glBindVertexArray(sphere_VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, sphere_VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, sphere_VBO);
 	glVertexAttribPointer(LOC_VERTEX, 3, GL_FLOAT, GL_FALSE, n_bytes_per_vertex, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(LOC_NORMAL, 3, GL_FLOAT, GL_FALSE, n_bytes_per_vertex, BUFFER_OFFSET(3 * sizeof(float)));
@@ -1020,6 +1022,9 @@ void display(void) {
 			ModelViewMatrix = ViewMatrix * ModelMatrix;
 			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
  
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+			glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
 			draw_tiger(); // 16
 
 		}
@@ -1030,12 +1035,13 @@ void display(void) {
 		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(500.0f, 0.0f, 500.0f));
 		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
 		ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+		ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
 		ModelViewMatrix = ViewMatrix * ModelMatrix;
 		ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
 		glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-		glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-		glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
+		glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
+		glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
 		draw_tiger(); 
 		// flag tiger
 
@@ -1074,8 +1080,8 @@ void display(void) {
 			float linear = light[i].light_attenuation_factors[1];
 			float quadratic = light[i].light_attenuation_factors[2];
 
-			float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (255.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
-			glUniform1f(loc_light_lighting[i].radius, radius);
+			light[i].radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (255.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
+			glUniform1f(loc_light_lighting[i].radius, light[i].radius);
 		}
 
 		//if (quad_VAO == 0)
@@ -1104,17 +1110,16 @@ void display(void) {
 
 		set_material_sphere();
 		for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+
 			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(light[i].radius, light[i].radius, light[i].radius));
 			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[i].position[0], light[i].position[1],
 				light[i].position[2]));
-			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(light[i].radius, light[i].radius, light[i].radius));
-			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-			//ModelViewMatrix = ViewMatrix * ModelMatrix;
-			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
+			ModelViewMatrix = ViewMatrix * ModelMatrix;
+			ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
-			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-			//glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
+			glUniformMatrix4fv(loc_ModelViewProjectionMatrix_lighting, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+
 			draw_sphere();
 		}
 
@@ -1578,6 +1583,8 @@ void prepare_shader_program(void) {
 		loc_material_lighting.specular_exponent = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.specular_exponent");
 
 		loc_flag_texture_mapping_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_flag_texture_mapping");
+
+		loc_ModelViewProjectionMatrix_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_ModelViewProjectionMatrix");
 	}
 }
 
@@ -1675,6 +1682,11 @@ void set_up_scene_lights(void) {
 		light[i].diffuse_color[0] = light[i].specular_color[0] = static_cast<float>(rand() % 100) / 100.0f;
 		light[i].diffuse_color[1] = light[i].specular_color[1] = static_cast<float>(rand() % 100) / 100.0f;
 		light[i].diffuse_color[2] = light[i].specular_color[2] = static_cast<float>(rand() % 100) / 100.0f;
+
+		light[i].light_attenuation_factors[0] = 1.0f;
+		light[i].light_attenuation_factors[1] = 0.014f;
+		light[i].light_attenuation_factors[2] = 0.0007f;
+		light[i].light_attenuation_factors[3] = 1.0f;
 	}
 
 
