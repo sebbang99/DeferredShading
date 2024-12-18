@@ -283,6 +283,7 @@ int tiger_vertex_offset[N_TIGER_FRAMES];
 GLfloat *tiger_vertices[N_TIGER_FRAMES];
 
 Material_Parameters material_tiger;
+Material_Parameters material_sphere;
 
 int read_geometry(GLfloat **object, int bytes_per_primitive, char *filename) {
 	int n_triangles;
@@ -446,6 +447,89 @@ void draw_tiger(void) {
 
 	glBindVertexArray(tiger_VAO);
 	glDrawArrays(GL_TRIANGLES, tiger_vertex_offset[cur_frame_tiger], 3 * tiger_n_triangles[cur_frame_tiger]);
+	glBindVertexArray(0);
+}
+
+// sphere object
+GLuint sphere_VBO, sphere_VAO;
+int sphere_n_triangles;
+GLfloat* sphere_vertices;
+
+void prepare_sphere() {
+	int i, n_bytes_per_vertex, n_bytes_per_triangle = 0;
+	char filename[512];
+
+	n_bytes_per_vertex = 8 * sizeof(float); // 3 for vertex, 3 for normal, and 2 for texcoord
+	n_bytes_per_triangle = 3 * n_bytes_per_vertex;
+
+	sprintf(filename, "Data/sphere_vnt.geom");
+	sphere_n_triangles = read_geometry(&sphere_vertices, n_bytes_per_triangle, filename);
+
+	// initialize vertex buffer object
+	glGenBuffers(1, &sphere_VBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, sphere_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sphere_n_triangles * n_bytes_per_triangle, sphere_vertices, GL_STATIC_DRAW);
+
+	//glBufferSubData(GL_ARRAY_BUFFER, 0,
+	//	sphere_n_triangles * n_bytes_per_triangle, sphere_vertices);
+
+	// as the geometry data exists now in graphics memory, ...
+	free(sphere_vertices);
+
+	// initialize vertex array object
+	glGenVertexArrays(1, &sphere_VAO);
+	glBindVertexArray(sphere_VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, sphere_VAO);
+	glVertexAttribPointer(LOC_VERTEX, 3, GL_FLOAT, GL_FALSE, n_bytes_per_vertex, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(LOC_NORMAL, 3, GL_FLOAT, GL_FALSE, n_bytes_per_vertex, BUFFER_OFFSET(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(LOC_TEXCOORD, 2, GL_FLOAT, GL_FALSE, n_bytes_per_vertex, BUFFER_OFFSET(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	material_sphere.ambient_color[0] = 0.24725f;
+	material_sphere.ambient_color[1] = 0.1995f;
+	material_sphere.ambient_color[2] = 0.0745f;
+	material_sphere.ambient_color[3] = 1.0f;
+
+	material_sphere.diffuse_color[0] = 0.75164f;
+	material_sphere.diffuse_color[1] = 0.60648f;
+	material_sphere.diffuse_color[2] = 0.22648f;
+	material_sphere.diffuse_color[3] = 1.0f;
+
+	material_sphere.specular_color[0] = 0.728281f;
+	material_sphere.specular_color[1] = 0.655802f;
+	material_sphere.specular_color[2] = 0.466065f;
+	material_sphere.specular_color[3] = 1.0f;
+
+	material_sphere.specular_exponent = 51.2f;
+
+	material_sphere.emissive_color[0] = 0.1f;
+	material_sphere.emissive_color[1] = 0.1f;
+	material_sphere.emissive_color[2] = 0.0f;
+	material_sphere.emissive_color[3] = 1.0f;
+
+	//glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);	// ?
+}
+
+void set_material_sphere(void) {
+	glUniform4fv(loc_material_lighting.ambient_color, 1, material_sphere.ambient_color);
+	glUniform4fv(loc_material_lighting.diffuse_color, 1, material_sphere.diffuse_color);
+	glUniform4fv(loc_material_lighting.specular_color, 1, material_sphere.specular_color);
+	glUniform1f(loc_material_lighting.specular_exponent, material_sphere.specular_exponent);
+	glUniform4fv(loc_material_lighting.emissive_color, 1, material_sphere.emissive_color);
+}
+
+void draw_sphere(void) {
+	glFrontFace(GL_CW);
+
+	glBindVertexArray(sphere_VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3 * sphere_n_triangles);
 	glBindVertexArray(0);
 }
 
@@ -994,29 +1078,45 @@ void display(void) {
 			glUniform1f(loc_light_lighting[i].radius, radius);
 		}
 
-		if (quad_VAO == 0)
-		{
-			float quadVertices[] = {
-				// positions        // texture Coords
-				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-			};
-			// setup plane VAO
-			glGenVertexArrays(1, &quad_VAO);
-			glGenBuffers(1, &quad_VBO);
-			glBindVertexArray(quad_VAO);
-			glBindBuffer(GL_ARRAY_BUFFER, quad_VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		//if (quad_VAO == 0)
+		//{
+		//	float quadVertices[] = {
+		//		// positions        // texture Coords
+		//		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+		//		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+		//		 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+		//		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		//	};
+		//	// setup plane VAO
+		//	glGenVertexArrays(1, &quad_VAO);
+		//	glGenBuffers(1, &quad_VBO);
+		//	glBindVertexArray(quad_VAO);
+		//	glBindBuffer(GL_ARRAY_BUFFER, quad_VBO);
+		//	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		//	glEnableVertexAttribArray(0);
+		//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		//	glEnableVertexAttribArray(1);
+		//	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		//}
+		//glBindVertexArray(quad_VAO);
+		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		//glBindVertexArray(0);
+
+		set_material_sphere();
+		for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+			ModelMatrix = glm::mat4(1.0f);
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[i].position[0], light[i].position[1],
+				light[i].position[2]));
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(light[i].radius, light[i].radius, light[i].radius));
+			//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
+			//ModelViewMatrix = ViewMatrix * ModelMatrix;
+			//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
+
+			//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+			//glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelViewMatrix[0][0]);
+			//glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
+			draw_sphere();
 		}
-		glBindVertexArray(quad_VAO);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBindVertexArray(0);
 
 	glUseProgram(0);
 	// Lighting pass END
@@ -1635,6 +1735,7 @@ void prepare_scene(void) {
 	//prepare_axes();	
 	prepare_floor();
 	prepare_tiger();
+	prepare_sphere();
 	set_up_scene_lights();
 }
 
