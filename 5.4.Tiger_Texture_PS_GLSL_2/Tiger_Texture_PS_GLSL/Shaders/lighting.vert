@@ -9,12 +9,14 @@
 // input vertex attributes
 //		: quad's position, texture coordinates.
 layout (location = 0) in vec3 a_position;
-layout (location = 1) in vec2 a_tex_coords;
+//layout (location = 1) in vec2 a_tex_coords;
 
-out vec2 tex_coords;
+uniform mat4 u_ModelViewProjectionMatrix;
+
+//out vec2 tex_coords;
 
 void main()
 {
-	tex_coords = a_tex_coords;
-	gl_Position = vec4(a_position, 1.0f);
+//	tex_coords = a_tex_coords;
+	gl_Position = u_ModelViewProjectionMatrix * vec4(a_position, 1.0f);
 }

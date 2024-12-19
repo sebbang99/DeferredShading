@@ -6,11 +6,12 @@
  
 #version 330 core
 
-in vec2 tex_coords;
+//in vec2 tex_coords;
 
 uniform sampler2D g_pos;
 uniform sampler2D g_norm;
 uniform sampler2D g_albedo_spec;
+uniform vec2 u_width_height;
 
 struct LIGHT {
 	vec4 position; 
@@ -122,6 +123,8 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 
 void main()
 {	
+	vec2 tex_coords = gl_FragCoord.xy / u_width_height;
+
 	vec3 frag_pos = texture(g_pos, tex_coords).rgb;
 	vec3 normal = texture(g_norm, tex_coords).rgb;
 	float spec = texture(g_albedo_spec, tex_coords).a;

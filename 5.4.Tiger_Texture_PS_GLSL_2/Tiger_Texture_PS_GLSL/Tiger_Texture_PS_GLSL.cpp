@@ -36,9 +36,16 @@ GLint loc_global_ambient_color_lighting;
 loc_light_Parameters loc_light_lighting[NUMBER_OF_LIGHT_SUPPORTED];
 GLint loc_flag_texture_mapping_lighting;
 loc_Material_Parameters loc_material_lighting;
+GLint loc_ModelViewProjectionMatrix_lighting;
+GLint loc_width_height;
 
-unsigned int g_buffer;
-unsigned int g_pos, g_norm, g_albedo_spec;
+// location of uniform variables for stencil pass shaders
+GLint loc_ModelViewProjectionMatrix_stencil;
+
+GLuint g_buffer;
+GLuint g_pos, g_norm, g_albedo_spec;
+GLuint final_texture;
+
 unsigned int quad_VAO = 0;
 unsigned int quad_VBO;
 
@@ -527,7 +534,7 @@ void set_material_sphere(void) {
 }
 
 void draw_sphere(void) {
-	glFrontFace(GL_CW);
+	glFrontFace(GL_CW);	// specifies the orientation of front-facing polygons.
 
 	glBindVertexArray(sphere_VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 3 * sphere_n_triangles);
@@ -1045,8 +1052,11 @@ void GeometryPass() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void StencilPass() {
+void StencilPass(uint32_t idx, float radius) {
+	glUseProgram(h_ShaderProgram_stencil);
+
 	glDrawBuffer(GL_NONE);		// not update any color buffers.
+
 	glEnable(GL_DEPTH_TEST);	// Depending on DT, stencil values will be increased or decreased by 1.
 
 	glDisable(GL_CULL_FACE);	// want to process both front and back faces.
@@ -1058,7 +1068,79 @@ void StencilPass() {
 	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);	// If depth test fails, stencil value increases by 1.
 	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);	// If depth test fails, stencil value decreases by 1.
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	set_material_sphere();
+
+	ModelMatrix = glm::mat4(1.0f);
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[idx].position[0], light[idx].position[1],
+		light[idx].position[2]));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(radius, radius, radius));
+	ModelViewMatrix = ViewMatrix * ModelMatrix;
+	ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
+
+	glUniformMatrix4fv(loc_ModelViewProjectionMatrix_stencil, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+
+	// need to set camera?
+
+	draw_sphere();
+}
+
+void PointLightPass(uint32_t idx, float radius) {
+
+	glDrawBuffer(GL_COLOR_ATTACHMENT3);
+
+	// g-buffer textures binding
+	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_POS);	
+	glBindTexture(GL_TEXTURE_2D, g_pos);	
+	glUniform1i(loc_g_pos, TEXTURE_ID_G_POS);
+	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_NORM);
+	glBindTexture(GL_TEXTURE_2D, g_norm);
+	glUniform1i(loc_g_norm, TEXTURE_ID_G_NORM);
+	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_ALBEDO_SPEC);
+	glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
+	glUniform1i(loc_g_albedo_spec, TEXTURE_ID_G_ALBEDO_SPEC);
+
+	glUseProgram(h_ShaderProgram_lighting);
+
+	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);	// not equal == pass, equal == fail
+
+	glDisable(GL_DEPTH_TEST);	// not need,
+								// because we will only shade the fragment of sphere depending on stencil value.
+
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);	// for the case when camera is inside the sphere of light.
+
+	set_material_sphere();
+
+	ModelMatrix = glm::mat4(1.0f);
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[idx].position[0], light[idx].position[1],
+		light[idx].position[2]));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(radius, radius, radius));
+	ModelViewMatrix = ViewMatrix * ModelMatrix;
+	ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
+
+	glUniformMatrix4fv(loc_ModelViewProjectionMatrix_lighting, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
+
+	glUniform2f(loc_width_height, WIDTH, HEIGHT);
+
+	glCullFace(GL_BACK);	// why? i think it's initialization.
+	
+	glDisable(GL_BLEND);	// why? i think it's initialization.
+}
+
+void FinalPass() {
+	
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, g_buffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+	glReadBuffer(GL_COLOR_ATTACHMENT3);
+
+	glBlitFramebuffer(0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }
 
 void display(void) {
@@ -1069,33 +1151,22 @@ void display(void) {
 
 	glEnable(GL_STENCIL_TEST);
 
-	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+	for (uint32_t idx = 0; idx < NUMBER_OF_LIGHT_SUPPORTED; idx++) {
 
-		StencilPass();
+		// Calculate radius of light volume/sphere
+		const float max_brightness = std::fmaxf(std::fmaxf(light[idx].diffuse_color[0], light[idx].diffuse_color[1]),
+			light[idx].diffuse_color[2]);	// diffuse only?
 
-		glUseProgram(h_ShaderProgram_lighting);
+		float constant = light[idx].light_attenuation_factors[0];
+		float linear = light[idx].light_attenuation_factors[1];
+		float quadratic = light[idx].light_attenuation_factors[2];
 
-		//glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_POS);
-		//glBindTexture(GL_TEXTURE_2D, g_pos);
-		//glUniform1i(loc_g_pos, TEXTURE_ID_G_POS);
-		//glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_NORM);
-		//glBindTexture(GL_TEXTURE_2D, g_norm);
-		//glUniform1i(loc_g_norm, TEXTURE_ID_G_NORM);
-		//glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_ALBEDO_SPEC);
-		//glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
-		//glUniform1i(loc_g_albedo_spec, TEXTURE_ID_G_ALBEDO_SPEC);
+		float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (255.0f / 5.0f) * max_brightness))) / (2.0f * quadratic);
 
-		// then calculate radius of light volume/sphere
-		const float maxBrightness = std::fmaxf(std::fmaxf(light[i].diffuse_color[0], light[i].diffuse_color[1]),
-			light[i].diffuse_color[2]);	// diffuse only?
+		StencilPass(idx, radius);
+		PointLightPass(idx, radius);
 
-		float constant = light[i].light_attenuation_factors[0];
-		float linear = light[i].light_attenuation_factors[1];
-		float quadratic = light[i].light_attenuation_factors[2];
-
-		float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (255.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
-		glUniform1f(loc_light_lighting[i].radius, radius);
-
+	}
 		//if (quad_VAO == 0)
 		//{
 		//	float quadVertices[] = {
@@ -1120,24 +1191,7 @@ void display(void) {
 		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		//glBindVertexArray(0);
 
-		set_material_sphere();
-
-		ModelMatrix = glm::mat4(1.0f);
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[i].position[0], light[i].position[1],
-			light[i].position[2]));
-		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(light[i].radius, light[i].radius, light[i].radius));
-		//ModelMatrix = glm::rotate(ModelMatrix, -90.0f * TO_RADIAN, glm::vec3(1.0f, 0.0f, 0.0f));
-		//ModelViewMatrix = ViewMatrix * ModelMatrix;
-		//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-
-		//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-		//glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelViewMatrix[0][0]);
-		//glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelViewMatrixInvTrans[0][0]);
-
-		// need to set camera?
-
-		draw_sphere();
-	}
+	FinalPass();
 
 	glUseProgram(0);
 
@@ -1603,6 +1657,10 @@ void prepare_shader_program(void) {
 		loc_material_lighting.specular_exponent = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.specular_exponent");
 
 		loc_flag_texture_mapping_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_flag_texture_mapping");
+
+		loc_ModelViewProjectionMatrix_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_ModelViewProjectionMatrix");
+		
+		loc_width_height = glGetUniformLocation(h_ShaderProgram_lighting, "u_width_height");
 	}
 
 	// stencil
@@ -1801,6 +1859,13 @@ void prepare_gbuffer(void) {
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WIDTH, HEIGHT);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
+
+	glGenTextures(1, &final_texture);
+	glBindTexture(GL_TEXTURE_2D, final_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);	// specify texture image.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, final_texture, 0);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		printf("Framebuffer not complete!\n");
