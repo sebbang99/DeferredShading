@@ -45,7 +45,7 @@ uniform bool u_flag_texture_mapping = true;
 const float zero_f = 0.0f;
 const float one_f = 1.0f;
 
-layout (location = 0) out vec4 final_color;
+out vec4 final_color;
 
 vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) {
 	vec4 color_sum;
@@ -70,9 +70,9 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 				tmp_vec4.w = zero_f;
 
 				// for method 3-1
-				if (tmp_vec4.y > u_light[i].radius) {
-					continue;
-				}
+//				if (tmp_vec4.y > u_light[i].radius) {
+//					continue;
+//				}
 
 				local_scale_factor = one_f/dot(tmp_vec4, u_light[i].light_attenuation_factors);
 			}
@@ -149,7 +149,9 @@ void main()
 	final_color = shaded_color;
 
 	// just for debugging pass 1.
-//	final_color = vec4(frag_pos, 1.0f);
-//	final_color = vec4(normal, 1.0f);
-//	final_color = base_color;
+	final_color = vec4(frag_pos, 1.0f);
+	final_color = vec4(normal, 1.0f);
+	final_color = base_color;
+
+//	final_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }
