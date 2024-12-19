@@ -89,6 +89,13 @@ Light_Parameters light[NUMBER_OF_LIGHT_SUPPORTED];
 GLuint texture_names[N_TEXTURES_USED];
 int flag_texture_mapping;
 
+void CheckError() {
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		printf("!!! ERROR FOUND !!! : 0x%x\n", error);
+	}
+}
+
 void My_glTexImage2D_from_file(char *filename) {
 	FREE_IMAGE_FORMAT tx_file_format;
 	int tx_bits_per_pixel;
@@ -1007,6 +1014,8 @@ void display(void) {
 
 	glUseProgram(0);
 	// Lighting pass END
+
+	CheckError();
 
 	glutSwapBuffers();
 }
