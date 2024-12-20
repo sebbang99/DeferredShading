@@ -546,7 +546,7 @@ float PRP_distance_scale[6] = { 0.5f, 1.0f, 2.5f, 5.0f, 10.0f, 20.0f };
 
 void GeometryPass() {
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	GLenum draw_buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(sizeof(draw_buffers) / draw_buffers[0], draw_buffers);
@@ -568,6 +568,8 @@ void GeometryPass() {
 	//glLineWidth(1.0f);
 
 	glDepthMask(GL_TRUE);	// enable writing to depth buffer.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
 	//glUseProgram(h_ShaderProgram_TXPS);
 	set_material_floor();
@@ -1096,8 +1098,8 @@ void StencilPass(uint32_t idx, float radius) {
 }
 
 void PointLightPass(uint32_t idx, float radius) {
-
-	glDrawBuffer(GL_COLOR_ATTACHMENT3);
+	
+	glDrawBuffer(GL_COLOR_ATTACHMENT4);
 
 	// g-buffer textures binding
 	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_POS);	
@@ -1111,6 +1113,8 @@ void PointLightPass(uint32_t idx, float radius) {
 	glUniform1i(loc_g_albedo_spec, TEXTURE_ID_G_ALBEDO_SPEC);
 
 	glUseProgram(h_ShaderProgram_lighting);
+	
+	//glClear(GL_COLOR_BUFFER_BIT);
 
 	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);	// not equal => pass, equal => fail
 
@@ -1149,14 +1153,14 @@ void FinalPass() {
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, g_buffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-	glReadBuffer(GL_COLOR_ATTACHMENT3);
+	glReadBuffer(GL_COLOR_ATTACHMENT4);
 
 	glBlitFramebuffer(0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }
 
 void display(void) {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, g_buffer);
-	glDrawBuffer(GL_COLOR_ATTACHMENT3);
+	glDrawBuffer(GL_COLOR_ATTACHMENT4);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1897,7 +1901,7 @@ void prepare_gbuffer(void) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);	// specify texture image.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, final_texture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, final_texture, 0);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		printf("Framebuffer not complete!\n");
