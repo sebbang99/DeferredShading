@@ -547,9 +547,9 @@ float PRP_distance_scale[6] = { 0.5f, 1.0f, 2.5f, 5.0f, 10.0f, 20.0f };
 void GeometryPass() {
 
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, g_buffer);
 	GLenum draw_buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(sizeof(draw_buffers) / draw_buffers[0], draw_buffers);
+	glDrawBuffers(sizeof(draw_buffers) / sizeof(draw_buffers[0]), draw_buffers);
 
 	// for background, but not needed.
 	//float defalut_pos[4] = { FLT_MAX, FLT_MAX, FLT_MAX, 1.0f };
@@ -1061,7 +1061,7 @@ void GeometryPass() {
 }
 
 void StencilPass(uint32_t idx, float radius) {
-
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, g_buffer);
 	glUseProgram(h_ShaderProgram_stencil);
 
 	glDrawBuffer(GL_NONE);		// not update any color buffers.
@@ -1079,7 +1079,7 @@ void StencilPass(uint32_t idx, float radius) {
 
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	set_material_sphere();
+	//set_material_sphere();
 
 	ModelMatrix = glm::mat4(1.0f);
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[idx].position[0], light[idx].position[1],
@@ -1098,8 +1098,11 @@ void StencilPass(uint32_t idx, float radius) {
 }
 
 void PointLightPass(uint32_t idx, float radius) {
-	
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, g_buffer);
 	glDrawBuffer(GL_COLOR_ATTACHMENT4);
+	//glClear(GL_COLOR_BUFFER_BIT);
+
+	glUseProgram(h_ShaderProgram_lighting);
 
 	// g-buffer textures binding
 	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_POS);	
@@ -1111,8 +1114,6 @@ void PointLightPass(uint32_t idx, float radius) {
 	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_ALBEDO_SPEC);
 	glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
 	glUniform1i(loc_g_albedo_spec, TEXTURE_ID_G_ALBEDO_SPEC);
-
-	glUseProgram(h_ShaderProgram_lighting);
 	
 	//glClear(GL_COLOR_BUFFER_BIT);
 
@@ -1128,7 +1129,7 @@ void PointLightPass(uint32_t idx, float radius) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);	// for the case when camera is inside the sphere of light.
 
-	set_material_sphere();
+	//set_material_sphere();
 
 	ModelMatrix = glm::mat4(1.0f);
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[idx].position[0], light[idx].position[1],
