@@ -76,6 +76,7 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 				local_scale_factor = one_f/dot(tmp_vec4, u_light[i].light_attenuation_factors);
 			}
 
+
 			// for local illumination.
 //			if (sqrt(dot(L_WC, L_WC)) > LIGHT_RANGE) {	// should be upgraded for efficiency.
 //				local_scale_factor = zero_f;

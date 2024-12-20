@@ -1575,6 +1575,11 @@ void set_up_scene_lights(void) {
 		light[i].diffuse_color[0] = light[i].specular_color[0] = static_cast<float>(rand() % 100) / 100.0f;
 		light[i].diffuse_color[1] = light[i].specular_color[1] = static_cast<float>(rand() % 100) / 100.0f;
 		light[i].diffuse_color[2] = light[i].specular_color[2] = static_cast<float>(rand() % 100) / 100.0f;
+
+		light[i].light_attenuation_factors[0] = 1.0f;
+		light[i].light_attenuation_factors[1] = 0.014f;
+		light[i].light_attenuation_factors[2] = 0.0007f;
+		light[i].light_attenuation_factors[3] = 1.0f;
 	}
 
 
@@ -1606,6 +1611,8 @@ void set_up_scene_lights(void) {
 		glUniform4fv(loc_light_lighting[i].ambient_color, 1, light[i].ambient_color);
 		glUniform4fv(loc_light_lighting[i].diffuse_color, 1, light[i].diffuse_color);
 		glUniform4fv(loc_light_lighting[i].specular_color, 1, light[i].specular_color);
+
+		glUniform4fv(loc_light_lighting[i].light_attenuation_factors, 1, light[i].light_attenuation_factors);
 	}
 
 	// spot light
