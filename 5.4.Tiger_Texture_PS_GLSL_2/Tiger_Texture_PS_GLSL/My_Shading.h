@@ -8,7 +8,6 @@ typedef struct _Light_Parameters {
 	float spot_exponent;
 	float spot_cutoff_angle;
 	float light_attenuation_factors[4]; // produce this effect only if .w != 0.0f
-	float radius;
 } Light_Parameters;
 
 typedef struct _loc_LIGHT_Parameters {
@@ -19,7 +18,6 @@ typedef struct _loc_LIGHT_Parameters {
 	GLint spot_exponent;
 	GLint spot_cutoff_angle;
 	GLint light_attenuation_factors; 
-	GLint radius;
 } loc_light_Parameters;
 
 typedef struct _Material_Parameters {

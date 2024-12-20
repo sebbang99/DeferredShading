@@ -33,7 +33,7 @@ GLint loc_texture_geometry;
 // location of uniform variables for lighting pass shaders
 GLint loc_g_pos, loc_g_norm, loc_g_albedo_spec;
 GLint loc_global_ambient_color_lighting;
-loc_light_Parameters loc_light_lighting[NUMBER_OF_LIGHT_SUPPORTED];
+loc_light_Parameters loc_light_lighting;// [NUMBER_OF_LIGHT_SUPPORTED] ;
 GLint loc_flag_texture_mapping_lighting;
 loc_Material_Parameters loc_material_lighting;
 GLint loc_ModelViewProjectionMatrix_lighting;
@@ -1139,7 +1139,11 @@ void PointLightPass(uint32_t idx, float radius) {
 	ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
 
 	glUniformMatrix4fv(loc_ModelViewProjectionMatrix_lighting, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-
+	glUniform1i(loc_light_lighting.light_on, light[idx].light_on);
+	glUniform4fv(loc_light_lighting.position, 1, light[idx].position);
+	glUniform4fv(loc_light_lighting.ambient_color, 1, light[idx].ambient_color);
+	glUniform4fv(loc_light_lighting.diffuse_color, 1, light[idx].diffuse_color);
+	glUniform4fv(loc_light_lighting.specular_color, 1, light[idx].specular_color);
 	glUniform2f(loc_width_height, WIDTH, HEIGHT);
 
 	draw_sphere();
@@ -1238,29 +1242,29 @@ void keyboard(unsigned char key, int x, int y) {
 	glm::vec4 position_EC;
 	glm::vec3 direction_EC;
 
-	if ((key >= '0') && (key <= '0' + NUMBER_OF_LIGHT_SUPPORTED - 1)) {
-		int light_ID = (int) (key - '0');
+	//if ((key >= '0') && (key <= '0' + NUMBER_OF_LIGHT_SUPPORTED - 1)) {
+	//	int light_ID = (int) (key - '0');
 
-		glUseProgram(h_ShaderProgram_lighting);
-		light[light_ID].light_on = 1 - light[light_ID].light_on;
-		glUniform1i(loc_light_lighting[light_ID].light_on, light[light_ID].light_on);
-		glUseProgram(0);
+	//	glUseProgram(h_ShaderProgram_lighting);
+	//	light[light_ID].light_on = 1 - light[light_ID].light_on;
+	//	glUniform1i(loc_light_lighting[light_ID].light_on, light[light_ID].light_on);
+	//	glUseProgram(0);
 
-		glutPostRedisplay();
-		return;
-	}
+	//	glutPostRedisplay();
+	//	return;
+	//}
 
 	switch (key) {
-	case 'z':
-		glUseProgram(h_ShaderProgram_lighting);
-		for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
-			light[i].light_on = 1 - light[i].light_on;
-			glUniform1i(loc_light_lighting[i].light_on, light[i].light_on);
-		}
-		glUseProgram(0);
+	//case 'z':
+	//	glUseProgram(h_ShaderProgram_lighting);
+	//	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+	//		light[i].light_on = 1 - light[i].light_on;
+	//		glUniform1i(loc_light_lighting[i].light_on, light[i].light_on);
+	//	}
+	//	glUseProgram(0);
 
-		glutPostRedisplay();
-		break;
+	//	glutPostRedisplay();
+	//	break;
 	case 'a': // toggle the animation effect.
 		flag_tiger_animation = 1 - flag_tiger_animation;
 		if (flag_tiger_animation) {
@@ -1652,28 +1656,26 @@ void prepare_shader_program(void) {
 		loc_g_albedo_spec = glGetUniformLocation(h_ShaderProgram_lighting, "g_albedo_spec");
 		loc_global_ambient_color_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_global_ambient_color");
 
-		for (i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
-			sprintf(string, "u_light[%d].light_on", i);
-			loc_light_lighting[i].light_on = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].position", i);
-			loc_light_lighting[i].position = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].ambient_color", i);
-			loc_light_lighting[i].ambient_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].diffuse_color", i);
-			loc_light_lighting[i].diffuse_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].specular_color", i);
-			loc_light_lighting[i].specular_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].spot_direction", i);
-			loc_light_lighting[i].spot_direction = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].spot_exponent", i);
-			loc_light_lighting[i].spot_exponent = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].spot_cutoff_angle", i);
-			loc_light_lighting[i].spot_cutoff_angle = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].light_attenuation_factors", i);
-			loc_light_lighting[i].light_attenuation_factors = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_light[%d].radius", i);
-			loc_light_lighting[i].radius = glGetUniformLocation(h_ShaderProgram_lighting, string);
-		}
+		//for (i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+			sprintf(string, "u_light.light_on");
+			loc_light_lighting.light_on = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light.position");
+			loc_light_lighting.position = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light.ambient_color");
+			loc_light_lighting.ambient_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light.diffuse_color");
+			loc_light_lighting.diffuse_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light.specular_color");
+			loc_light_lighting.specular_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light.spot_direction");
+			loc_light_lighting.spot_direction = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light.spot_exponent");
+			loc_light_lighting.spot_exponent = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light.spot_cutoff_angle");
+			loc_light_lighting.spot_cutoff_angle = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light.light_attenuation_factors");
+			loc_light_lighting.light_attenuation_factors = glGetUniformLocation(h_ShaderProgram_lighting, string);
+		//}
 
 		loc_material_lighting.ambient_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.ambient_color");
 		loc_material_lighting.diffuse_color = glGetUniformLocation(h_ShaderProgram_lighting, "u_material.diffuse_color");
@@ -1700,23 +1702,23 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 
 	glUniform4f(loc_global_ambient_color_lighting, 0.115f, 0.115f, 0.115f, 1.0f);
 	//glUniform4f(loc_global_ambient_color_lighting, 1.0f, 1.0f, 1.0f, 1.0f);	// just for debugging
-	for (i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
-		glUniform1i(loc_light_lighting[i].light_on, 0); // turn off all lights initially
-		glUniform4f(loc_light_lighting[i].position, 0.0f, 0.0f, 1.0f, 0.0f);
-		glUniform4f(loc_light_lighting[i].ambient_color, 0.0f, 0.0f, 0.0f, 1.0f);
-		if (i == 0) {
-			glUniform4f(loc_light_lighting[i].diffuse_color, 1.0f, 1.0f, 1.0f, 1.0f);
-			glUniform4f(loc_light_lighting[i].specular_color, 1.0f, 1.0f, 1.0f, 1.0f);
-		}
-		else {
-			glUniform4f(loc_light_lighting[i].diffuse_color, 0.0f, 0.0f, 0.0f, 1.0f);
-			glUniform4f(loc_light_lighting[i].specular_color, 0.0f, 0.0f, 0.0f, 1.0f);
-		}
-		glUniform3f(loc_light_lighting[i].spot_direction, 0.0f, 0.0f, -1.0f);
-		glUniform1f(loc_light_lighting[i].spot_exponent, 0.0f); // [0.0, 128.0]
-		glUniform1f(loc_light_lighting[i].spot_cutoff_angle, 180.0f); // [0.0, 90.0] or 180.0 (180.0 for no spot light effect)
-		glUniform4f(loc_light_lighting[i].light_attenuation_factors, 1.0f, 0.014f, 0.0007f, 1.0f); // .w == 0.0f for no light attenuation
-	}
+	//for (i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+		glUniform1i(loc_light_lighting.light_on, 0); // turn off all lights initially
+		glUniform4f(loc_light_lighting.position, 0.0f, 0.0f, 1.0f, 0.0f);
+		glUniform4f(loc_light_lighting.ambient_color, 0.0f, 0.0f, 0.0f, 1.0f);
+		//if (i == 0) {
+			glUniform4f(loc_light_lighting.diffuse_color, 1.0f, 1.0f, 1.0f, 1.0f);
+			glUniform4f(loc_light_lighting.specular_color, 1.0f, 1.0f, 1.0f, 1.0f);
+		//}
+		//else {
+		//	glUniform4f(loc_light_lighting.diffuse_color, 0.0f, 0.0f, 0.0f, 1.0f);
+		//	glUniform4f(loc_light_lighting.specular_color, 0.0f, 0.0f, 0.0f, 1.0f);
+		//}
+		glUniform3f(loc_light_lighting.spot_direction, 0.0f, 0.0f, -1.0f);
+		glUniform1f(loc_light_lighting.spot_exponent, 0.0f); // [0.0, 128.0]
+		glUniform1f(loc_light_lighting.spot_cutoff_angle, 180.0f); // [0.0, 90.0] or 180.0 (180.0 for no spot light effect)
+		glUniform4f(loc_light_lighting.light_attenuation_factors, 1.0f, 0.014f, 0.0007f, 1.0f); // .w == 0.0f for no light attenuation
+	//}
 
 	glUniform4f(loc_material_lighting.ambient_color, 0.2f, 0.2f, 0.2f, 1.0f);
 	glUniform4f(loc_material_lighting.diffuse_color, 0.8f, 0.8f, 0.8f, 1.0f);
@@ -1815,7 +1817,7 @@ void set_up_scene_lights(void) {
 	light[1].spot_exponent = 8.0f;*/
 
 
-	glUseProgram(h_ShaderProgram_lighting);
+	/*glUseProgram(h_ShaderProgram_lighting);
 	
 	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
 		glUniform1i(loc_light_lighting[i].light_on, light[i].light_on);
@@ -1823,7 +1825,7 @@ void set_up_scene_lights(void) {
 		glUniform4fv(loc_light_lighting[i].ambient_color, 1, light[i].ambient_color);
 		glUniform4fv(loc_light_lighting[i].diffuse_color, 1, light[i].diffuse_color);
 		glUniform4fv(loc_light_lighting[i].specular_color, 1, light[i].specular_color);
-	}
+	}*/
 
 	// spot light
 	/*glUniform1i(loc_light[1].light_on, light[1].light_on);
@@ -1845,7 +1847,7 @@ void set_up_scene_lights(void) {
 	glUniform1f(loc_light[1].spot_cutoff_angle, light[1].spot_cutoff_angle);
 	glUniform1f(loc_light[1].spot_exponent, light[1].spot_exponent);*/
 
-	glUseProgram(0);
+	//glUseProgram(0);
 }
 
 void prepare_scene(void) {

@@ -21,7 +21,7 @@ struct LIGHT {
 	float spot_exponent;
 	float spot_cutoff_angle;
 	bool light_on;
-	float radius;
+	
 };
 
 struct MATERIAL {
@@ -34,7 +34,7 @@ struct MATERIAL {
 
 uniform vec4 u_global_ambient_color;
 #define NUMBER_OF_LIGHTS_SUPPORTED 50
-uniform LIGHT u_light[NUMBER_OF_LIGHTS_SUPPORTED];
+uniform LIGHT u_light;//[NUMBER_OF_LIGHTS_SUPPORTED];
 uniform MATERIAL u_material;
 
 // for local illumination
@@ -54,14 +54,14 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 
 	color_sum = u_material.emissive_color + u_global_ambient_color * base_color;
  
-	for (int i = 0; i < NUMBER_OF_LIGHTS_SUPPORTED; i++) {
-		if (!u_light[i].light_on) continue;
+//	for (int i = 0; i < NUMBER_OF_LIGHTS_SUPPORTED; i++) {
+//		if (!u_light.light_on) continue;
 
 		local_scale_factor = one_f;
-		if (u_light[i].position.w != zero_f) { // point light source
-			L_WC = u_light[i].position.xyz - P_WC.xyz;
+		if (u_light.position.w != zero_f) { // point light source
+			L_WC = u_light.position.xyz - P_WC.xyz;
 
-			if (u_light[i].light_attenuation_factors.w != zero_f) {
+			if (u_light.light_attenuation_factors.w != zero_f) {
 				vec4 tmp_vec4;
 
 				tmp_vec4.x = one_f;
@@ -74,7 +74,7 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 //					continue;
 //				}
 
-				local_scale_factor = one_f/dot(tmp_vec4, u_light[i].light_attenuation_factors);
+				local_scale_factor = one_f/dot(tmp_vec4, u_light.light_attenuation_factors);
 			}
 
 			// for local illumination.
@@ -84,13 +84,13 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 
 			L_WC = normalize(L_WC);
 
-			if (u_light[i].spot_cutoff_angle < 180.0f) { // [0.0f, 90.0f] or 180.0f
-				float spot_cutoff_angle = clamp(u_light[i].spot_cutoff_angle, zero_f, 90.0f);
-				vec3 spot_dir = normalize(u_light[i].spot_direction);
+			if (u_light.spot_cutoff_angle < 180.0f) { // [0.0f, 90.0f] or 180.0f
+				float spot_cutoff_angle = clamp(u_light.spot_cutoff_angle, zero_f, 90.0f);
+				vec3 spot_dir = normalize(u_light.spot_direction);
 
 				tmp_float = dot(-L_WC, spot_dir);
 				if (tmp_float >= cos(radians(spot_cutoff_angle))) {
-					tmp_float = pow(tmp_float, u_light[i].spot_exponent);
+					tmp_float = pow(tmp_float, u_light.spot_exponent);
 				}
 				else 
 					tmp_float = zero_f;
@@ -98,26 +98,26 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 			}
 		}
 		else {  // directional light source
-			L_WC = normalize(u_light[i].position.xyz);
+			L_WC = normalize(u_light.position.xyz);
 		}	
 
 		if (local_scale_factor > zero_f) {		
-		 	vec4 local_color_sum = u_light[i].ambient_color * u_material.ambient_color;
+		 	vec4 local_color_sum = u_light.ambient_color * u_material.ambient_color;
 
 			tmp_float = dot(N_WC, L_WC);  
 			if (tmp_float > zero_f) {  
-				local_color_sum += u_light[i].diffuse_color*base_color*tmp_float;
+				local_color_sum += u_light.diffuse_color*base_color*tmp_float;
 			
 				vec3 H_WC = normalize(L_WC - normalize(P_WC));
 				tmp_float = dot(N_WC, H_WC); 
 				if (tmp_float > zero_f) {
-					local_color_sum += u_light[i].specular_color
+					local_color_sum += u_light.specular_color
 				                       *u_material.specular_color*pow(tmp_float, u_material.specular_exponent);
 				}
 			}
 			color_sum += local_scale_factor*local_color_sum;
 		}
-	}
+//	}
  	return color_sum;
 }
 
