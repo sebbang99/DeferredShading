@@ -15,11 +15,12 @@ in vec3 normal;
 in vec2 tex_coords;
 
 uniform sampler2D u_base_texture;
+uniform float u_material_id;
 
 void main()
 {
 	g_pos = frag_pos;	// WC
 	g_norm = normal;	// WC
 	g_albedo_spec.rgb = texture(u_base_texture, tex_coords).rgb;
-	g_albedo_spec.a = 1.0f;	// TODO
+	g_albedo_spec.a = float(u_material_id) / 255.0f;
 }
