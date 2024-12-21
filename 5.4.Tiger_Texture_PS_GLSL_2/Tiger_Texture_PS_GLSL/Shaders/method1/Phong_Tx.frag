@@ -36,9 +36,7 @@ uniform bool u_flag_fog = false;
 const float zero_f = 0.0f;
 const float one_f = 1.0f;
 
-//in vec3 v_position_EC;
 in vec3 v_position_WC;
-//in vec3 v_normal_EC;
 in vec3 v_normal_WC;
 in vec2 v_tex_coord;
 layout (location = 0) out vec4 final_color;
@@ -46,7 +44,6 @@ layout (location = 0) out vec4 final_color;
 vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) {
 	vec4 color_sum;
 	float local_scale_factor, tmp_float; 
-//	vec3 L_EC;
 	vec3 L_WC;
 
 	color_sum = u_material.emissive_color + u_global_ambient_color * base_color;
