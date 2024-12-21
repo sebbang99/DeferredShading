@@ -35,6 +35,12 @@
     <None Include="Shaders\method4\stencil.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\method4\global.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method4\global.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

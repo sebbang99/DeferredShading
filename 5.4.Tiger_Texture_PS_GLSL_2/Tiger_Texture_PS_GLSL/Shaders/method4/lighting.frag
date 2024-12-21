@@ -31,7 +31,7 @@ struct MATERIAL {
 	float specular_exponent;
 };
 
-uniform vec4 u_global_ambient_color;
+//uniform vec4 u_global_ambient_color;
 #define NUMBER_OF_LIGHTS_SUPPORTED 100
 uniform LIGHT u_light;
 
@@ -55,7 +55,7 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color, 
 
 	vec4 ambient_color = u_material[m_id].ambient_color;
     vec4 specular_color = u_material[m_id].specular_color;
-    vec4 emissive_color = u_material[m_id].emissive_color;
+//    vec4 emissive_color = u_material[m_id].emissive_color;
     float specular_exponent = u_material[m_id].specular_exponent;
 
     color_sum = vec4(0.0f);//emissive_color + u_global_ambient_color * base_color;

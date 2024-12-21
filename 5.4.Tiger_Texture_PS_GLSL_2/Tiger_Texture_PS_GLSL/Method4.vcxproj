@@ -166,6 +166,8 @@
   <ItemGroup>
     <None Include="Shaders\method4\geometry.frag" />
     <None Include="Shaders\method4\geometry.vert" />
+    <None Include="Shaders\method4\global.frag" />
+    <None Include="Shaders\method4\global.vert" />
     <None Include="Shaders\method4\lighting.frag" />
     <None Include="Shaders\method4\lighting.vert" />
     <None Include="Shaders\method4\stencil.frag" />

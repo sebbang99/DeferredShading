@@ -16,7 +16,7 @@ int frame_cnt = 0;
 #include "My_Shading_Method4.h"
 // handles to shader programs
 GLuint h_ShaderProgram_geometry, h_ShaderProgram_lighting;
-GLuint h_ShaderProgram_stencil;
+GLuint h_ShaderProgram_stencil, h_ShaderProgram_global;
 
 #define NUMBER_OF_LIGHT_SUPPORTED 100
 
@@ -32,7 +32,7 @@ GLint loc_material_id;
 
 // location of uniform variables for lighting pass shaders
 GLint loc_g_pos, loc_g_norm, loc_g_albedo_spec;
-GLint loc_global_ambient_color_lighting;
+//GLint loc_global_ambient_color_lighting;
 loc_light_Parameters loc_light_lighting;// [NUMBER_OF_LIGHT_SUPPORTED] ;
 GLint loc_flag_texture_mapping_lighting;
 loc_Material_Parameters loc_material_lighting[NUMBER_OF_MATERIALS];
@@ -41,6 +41,12 @@ GLint loc_width_height;
 
 // location of uniform variables for stencil pass shaders
 GLint loc_ModelViewProjectionMatrix_stencil;
+
+// location of uniform variables for global pass shaders
+GLint loc_global_ambient_color_global;
+GLint loc_g_albedo_spec_global;
+loc_Material_Parameters loc_material_global[NUMBER_OF_MATERIALS];
+GLint loc_flag_texture_mapping_global;
 
 GLuint g_buffer;
 GLuint g_pos, g_norm, g_albedo_spec;
@@ -228,6 +234,14 @@ float rotation_angle_tiger = 0.0f;
 	 glUniform4fv(loc_material_lighting[MATERIAL_ID_FLOOR].emissive_color, 1, material_floor.emissive_color);
  }
 
+ void set_material_floor_global(void) {
+	 glUniform4fv(loc_material_global[MATERIAL_ID_FLOOR].ambient_color, 1, material_floor.ambient_color);
+	 glUniform4fv(loc_material_global[MATERIAL_ID_FLOOR].diffuse_color, 1, material_floor.diffuse_color);
+	 glUniform4fv(loc_material_global[MATERIAL_ID_FLOOR].specular_color, 1, material_floor.specular_color);
+	 glUniform1f(loc_material_global[MATERIAL_ID_FLOOR].specular_exponent, material_floor.specular_exponent);
+	 glUniform4fv(loc_material_global[MATERIAL_ID_FLOOR].emissive_color, 1, material_floor.emissive_color);
+ }
+
  void draw_floor(void) {
 	 glFrontFace(GL_CCW);
 
@@ -401,6 +415,14 @@ void set_material_tiger(void) {
 	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].specular_color, 1, material_tiger.specular_color);
 	glUniform1f(loc_material_lighting[MATERIAL_ID_TIGER].specular_exponent, material_tiger.specular_exponent);
 	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].emissive_color, 1, material_tiger.emissive_color);
+}
+
+void set_material_tiger_global(void) {
+	glUniform4fv(loc_material_global[MATERIAL_ID_TIGER].ambient_color, 1, material_tiger.ambient_color);
+	glUniform4fv(loc_material_global[MATERIAL_ID_TIGER].diffuse_color, 1, material_tiger.diffuse_color);
+	glUniform4fv(loc_material_global[MATERIAL_ID_TIGER].specular_color, 1, material_tiger.specular_color);
+	glUniform1f(loc_material_global[MATERIAL_ID_TIGER].specular_exponent, material_tiger.specular_exponent);
+	glUniform4fv(loc_material_global[MATERIAL_ID_TIGER].emissive_color, 1, material_tiger.emissive_color);
 }
 
 void draw_tiger(void) {
@@ -1061,6 +1083,52 @@ void PointLightPass(uint32_t idx, float radius) {
 	glDisable(GL_BLEND);	// why? i think it's initialization.
 }
 
+unsigned int quad_VAO = 0;
+unsigned int quad_VBO;
+void GlobalPass() {
+	glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
+	glDrawBuffer(GL_COLOR_ATTACHMENT4);
+
+	glUseProgram(h_ShaderProgram_global);
+
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	glActiveTexture(GL_TEXTURE0 + TEXTURE_ID_G_ALBEDO_SPEC);
+	glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
+	glUniform1i(loc_g_albedo_spec_global, TEXTURE_ID_G_ALBEDO_SPEC);
+
+	set_material_floor_global();
+	set_material_tiger_global();
+
+	if (quad_VAO == 0)
+	{
+		float quadVertices[] = {
+			// positions        // texture Coords
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		};
+		// setup plane VAO
+		glGenVertexArrays(1, &quad_VAO);
+		glGenBuffers(1, &quad_VBO);
+		glBindVertexArray(quad_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quad_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	}
+	glBindVertexArray(quad_VAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
+
+	glDisable(GL_BLEND);
+}
+
 void FinalPass() {
 	
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, g_buffer);
@@ -1113,6 +1181,9 @@ void display(void) {
 	}
 
 	glDisable(GL_STENCIL_TEST);
+
+	// This pass is need for emissive and global ambient color. 
+	GlobalPass();
 
 	FinalPass();
 
@@ -1192,6 +1263,8 @@ void keyboard(unsigned char key, int x, int y) {
 			fprintf(stdout, "^^^ Texture mapping OFF.\n");
 		glUseProgram(h_ShaderProgram_lighting);
 		glUniform1i(loc_flag_texture_mapping_lighting, flag_texture_mapping);
+		glUseProgram(h_ShaderProgram_global);
+		glUniform1i(loc_flag_texture_mapping_global, flag_texture_mapping);
 		glUseProgram(0);
 		glutPostRedisplay();
 		break;
@@ -1473,6 +1546,11 @@ void prepare_shader_program(void) {
 		{ GL_FRAGMENT_SHADER, "Shaders/method4/stencil.frag" },
 		{ GL_NONE, NULL }
 	};
+	ShaderInfo shader_info_global[3] = {
+		{ GL_VERTEX_SHADER, "Shaders/method4/global.vert" },
+		{ GL_FRAGMENT_SHADER, "Shaders/method4/global.frag" },
+		{ GL_NONE, NULL }
+	};
 
 	// geometry
 	{
@@ -1490,7 +1568,7 @@ void prepare_shader_program(void) {
 		loc_g_pos = glGetUniformLocation(h_ShaderProgram_lighting, "g_pos");
 		loc_g_norm = glGetUniformLocation(h_ShaderProgram_lighting, "g_norm");
 		loc_g_albedo_spec = glGetUniformLocation(h_ShaderProgram_lighting, "g_albedo_spec");
-		loc_global_ambient_color_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_global_ambient_color");
+		//loc_global_ambient_color_lighting = glGetUniformLocation(h_ShaderProgram_lighting, "u_global_ambient_color");
 
 		sprintf(string, "u_light.light_on");
 		loc_light_lighting.light_on = glGetUniformLocation(h_ShaderProgram_lighting, string);
@@ -1534,6 +1612,26 @@ void prepare_shader_program(void) {
 	// stencil
 	h_ShaderProgram_stencil = LoadShaders(shader_info_stencil);
 	loc_ModelViewProjectionMatrix_stencil = glGetUniformLocation(h_ShaderProgram_stencil, "u_ModelViewProjectionMatrix");
+
+	// global
+	h_ShaderProgram_global = LoadShaders(shader_info_global);
+	loc_global_ambient_color_global = glGetUniformLocation(h_ShaderProgram_global, "u_global_ambient_color");
+	loc_g_albedo_spec_global = glGetUniformLocation(h_ShaderProgram_global, "g_albedo_spec");
+
+	for (i = 0; i < NUMBER_OF_MATERIALS; i++) {
+		sprintf(string, "u_material[%d].ambient_color", i);
+		loc_material_global[i].ambient_color = glGetUniformLocation(h_ShaderProgram_global, string);
+		sprintf(string, "u_material[%d].diffuse_color", i);
+		loc_material_global[i].diffuse_color = glGetUniformLocation(h_ShaderProgram_global, string);
+		sprintf(string, "u_material[%d].specular_color", i);
+		loc_material_global[i].specular_color = glGetUniformLocation(h_ShaderProgram_global, string);
+		sprintf(string, "u_material[%d].emissive_color", i);
+		loc_material_global[i].emissive_color = glGetUniformLocation(h_ShaderProgram_global, string);
+		sprintf(string, "u_material[%d].specular_exponent", i);
+		loc_material_global[i].specular_exponent = glGetUniformLocation(h_ShaderProgram_global, string);
+	}
+	
+	loc_flag_texture_mapping_global = glGetUniformLocation(h_ShaderProgram_global, "u_flag_texture_mapping");
 }
 
 void initialize_lights_and_material(void) { // follow OpenGL conventions for initialization
@@ -1541,7 +1639,7 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 
 	glUseProgram(h_ShaderProgram_lighting);
 
-	glUniform4f(loc_global_ambient_color_lighting, 0.115f, 0.115f, 0.115f, 1.0f);
+	//glUniform4f(loc_global_ambient_color_lighting, 0.115f, 0.115f, 0.115f, 1.0f);
 	//glUniform4f(loc_global_ambient_color_lighting, 1.0f, 1.0f, 1.0f, 1.0f);	// just for debugging
 
 	glUniform1i(loc_light_lighting.light_on, 0); // turn off all lights initially
@@ -1563,6 +1661,16 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 		glUniform1f(loc_material_lighting[i].specular_exponent, 0.0f); // [0.0, 128.0]
 	}
 
+	glUseProgram(h_ShaderProgram_global);
+	glUniform4f(loc_global_ambient_color_global, 0.115f, 0.115f, 0.115f, 1.0f);
+	for (i = 0; i < NUMBER_OF_MATERIALS; i++) {
+		glUniform4f(loc_material_lighting[i].ambient_color, 0.2f, 0.2f, 0.2f, 1.0f);
+		glUniform4f(loc_material_lighting[i].diffuse_color, 0.8f, 0.8f, 0.8f, 1.0f);
+		glUniform4f(loc_material_lighting[i].specular_color, 0.0f, 0.0f, 0.0f, 1.0f);
+		glUniform4f(loc_material_lighting[i].emissive_color, 0.0f, 0.0f, 0.0f, 1.0f);
+		glUniform1f(loc_material_lighting[i].specular_exponent, 0.0f); // [0.0, 128.0]
+	}
+
 	glUseProgram(0);
 }
 
@@ -1574,6 +1682,7 @@ void initialize_flags(void) {
 
 	glUseProgram(h_ShaderProgram_lighting);
 	glUniform1i(loc_flag_texture_mapping_lighting, flag_texture_mapping);
+	glUniform1i(loc_flag_texture_mapping_global, flag_texture_mapping);
 	glUseProgram(0);
 }
 
