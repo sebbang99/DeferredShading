@@ -63,8 +63,6 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color, 
 	for (int i = 0; i < NUMBER_OF_LIGHTS_SUPPORTED; i++) {
 		if (!u_light[i].light_on) continue;
 
-//		return vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
 		local_scale_factor = one_f;
 		if (u_light[i].position.w != zero_f) { // point light source
 			L_WC = u_light[i].position.xyz - P_WC.xyz;

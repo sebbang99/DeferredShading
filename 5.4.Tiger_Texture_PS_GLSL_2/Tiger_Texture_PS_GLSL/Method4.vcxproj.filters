@@ -29,12 +29,6 @@
     <None Include="Shaders\method4\lighting.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method4\Phong_Tx.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\method4\Phong_Tx.vert">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\method4\stencil.frag">
       <Filter>Shaders</Filter>
     </None>
