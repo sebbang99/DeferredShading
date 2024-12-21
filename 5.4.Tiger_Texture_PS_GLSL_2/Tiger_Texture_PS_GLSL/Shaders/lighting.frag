@@ -35,7 +35,9 @@ struct MATERIAL {
 uniform vec4 u_global_ambient_color;
 #define NUMBER_OF_LIGHTS_SUPPORTED 50
 uniform LIGHT u_light;//[NUMBER_OF_LIGHTS_SUPPORTED];
-uniform MATERIAL u_material;
+
+#define NUMBER_OF_MATERIALS 3 // default, tiger, floor
+uniform MATERIAL u_material[NUMBER_OF_MATERIALS];
 
 // for local illumination
 //#define LIGHT_RANGE 100.0f
@@ -47,12 +49,22 @@ const float one_f = 1.0f;
 
 out vec4 final_color;
 
-vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) {
+vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color, int m_id) {
 	vec4 color_sum;
 	float local_scale_factor, tmp_float; 
 	vec3 L_WC;
 
-	color_sum = u_material.emissive_color + u_global_ambient_color * base_color;
+	vec4 ambient_color = u_material[m_id].ambient_color;
+    vec4 specular_color = u_material[m_id].specular_color;
+    vec4 emissive_color = u_material[m_id].emissive_color;
+    float specular_exponent = u_material[m_id].specular_exponent;
+
+    color_sum = vec4(0.0f);//emissive_color + u_global_ambient_color * base_color;
+	// Note by Sehee
+	// The method 4 runs fragment shader by each sphere of light in the lighting pass,
+	// and each fragment shader run has only fragments of corresponding sphere region.
+	// If you turn on the comment above, the global illumination effect will be overlapped.
+	// Therefore, for the global illumination effect, it is recommended that to use new last pass. 
  
 //	for (int i = 0; i < NUMBER_OF_LIGHTS_SUPPORTED; i++) {
 //		if (!u_light.light_on) continue;
@@ -102,7 +114,7 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 		}	
 
 		if (local_scale_factor > zero_f) {		
-		 	vec4 local_color_sum = u_light.ambient_color * u_material.ambient_color;
+		 	vec4 local_color_sum = u_light.ambient_color * ambient_color;
 
 			tmp_float = dot(N_WC, L_WC);  
 			if (tmp_float > zero_f) {  
@@ -112,7 +124,7 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color) 
 				tmp_float = dot(N_WC, H_WC); 
 				if (tmp_float > zero_f) {
 					local_color_sum += u_light.specular_color
-				                       *u_material.specular_color*pow(tmp_float, u_material.specular_exponent);
+				                       *specular_color*pow(tmp_float, specular_exponent);
 				}
 			}
 			color_sum += local_scale_factor*local_color_sum;
@@ -127,24 +139,21 @@ void main()
 
 	vec3 frag_pos = texture(g_pos, tex_coords).rgb;
 	vec3 normal = texture(g_norm, tex_coords).rgb;
-	float spec = texture(g_albedo_spec, tex_coords).a;
-
-//	if (frag_pos.x > 500.0f || frag_pos.x < -500.0f) {
-//		final_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-//		return;
-//	}
+	int material_id = int(texture(g_albedo_spec, tex_coords).a * 255.0f);
 
 	vec4 base_color, shaded_color;
+
+	vec4 diffuse_color = u_material[material_id].diffuse_color;
 
 	if (u_flag_texture_mapping) 
 		base_color = vec4(texture(g_albedo_spec, tex_coords).rgb, 1.0f);
 	else 
-		base_color = u_material.diffuse_color;
+		base_color = diffuse_color;
 	// Note meanings of these variables below in the light equation.
 	// base_color	: kd
 	// spec			: ks
 
-	shaded_color = lighting_equation_textured(frag_pos, normalize(normal), base_color);
+	shaded_color = lighting_equation_textured(frag_pos, normalize(normal), base_color, material_id);
 
 	final_color = shaded_color;
 
