@@ -8,7 +8,8 @@
 
 #include "Shaders/LoadShaders.h"
 #include "My_Shading.h"
-//GLuint h_ShaderProgram_simple, h_ShaderProgram_TXPS; // handles to shader programs
+// handles to shader programs
+GLuint h_ShaderProgram_TXPS; 
 GLuint h_ShaderProgram_geometry, h_ShaderProgram_lighting;
 GLuint h_ShaderProgram_stencil;
 
@@ -18,16 +19,13 @@ GLuint h_ShaderProgram_stencil;
 #define MATERIAL_ID_TIGER 1
 #define MATERIAL_ID_FLOOR 2
 
-// for simple shaders
-//GLint loc_ModelViewProjectionMatrix_simple, loc_primitive_color;
-
 // for Phong Shading (Textured) shaders
-//GLint loc_global_ambient_color;
-//loc_light_Parameters loc_light[NUMBER_OF_LIGHT_SUPPORTED];
-//loc_Material_Parameters loc_material;
-//GLint loc_ModelViewProjectionMatrix_TXPS;
-//GLint loc_ModelMatrix_TXPS, loc_ModelMatrixInvTrans_TXPS;
-//GLint loc_texture, loc_flag_texture_mapping, loc_flag_fog;
+GLint loc_global_ambient_color;
+loc_light_Parameters loc_light[NUMBER_OF_LIGHT_SUPPORTED];
+loc_Material_Parameters loc_material;
+GLint loc_ModelViewProjectionMatrix_TXPS;
+GLint loc_ModelMatrix_TXPS, loc_ModelMatrixInvTrans_TXPS;
+GLint loc_texture, loc_flag_texture_mapping, loc_flag_fog;
 
 // location of uniform variables for geometry pass shaders
 GLint loc_ModelViewProjectionMatrix_geometry;
@@ -145,46 +143,6 @@ int flag_tiger_animation, flag_polygon_fill;
 int cur_frame_tiger = 0;
 float rotation_angle_tiger = 0.0f;
 
-// temporary disabled.
-// axes object
-//GLuint axes_VBO, axes_VAO;
-//GLfloat axes_vertices[6][3] = {
-//	{ 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f },
-//	{ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }
-//};
-//GLfloat axes_color[3][3] = { { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } };
-
-//void prepare_axes(void) { 
-//	// draw coordinate axes
-//	// initialize vertex buffer object
-//	glGenBuffers(1, &axes_VBO);
-//
-//	glBindBuffer(GL_ARRAY_BUFFER, axes_VBO);
-//	glBufferData(GL_ARRAY_BUFFER, sizeof(axes_vertices), &axes_vertices[0][0], GL_STATIC_DRAW);
-//
-//	// initialize vertex array object
-//	glGenVertexArrays(1, &axes_VAO);
-//	glBindVertexArray(axes_VAO);
-//
-//	glBindBuffer(GL_ARRAY_BUFFER, axes_VBO);
-//	glVertexAttribPointer(LOC_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-//	glEnableVertexAttribArray(0);
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//	glBindVertexArray(0);
-//}
-
- //void draw_axes(void) {
-	// // assume ShaderProgram_simple is used
-	// glBindVertexArray(axes_VAO);
-	// glUniform3fv(loc_primitive_color, 1, axes_color[0]);
-	// glDrawArrays(GL_LINES, 0, 2);
-	// glUniform3fv(loc_primitive_color, 1, axes_color[1]);
-	// glDrawArrays(GL_LINES, 2, 2);
-	// glUniform3fv(loc_primitive_color, 1, axes_color[2]);
-	// glDrawArrays(GL_LINES, 4, 2);
-	// glBindVertexArray(0);
- //}
-
  // floor object
 #define TEX_COORD_EXTENT 1.0f
  GLuint rectangle_VBO, rectangle_VAO;
@@ -230,10 +188,6 @@ float rotation_angle_tiger = 0.0f;
 	 material_floor.diffuse_color[1] = 0.5f;
 	 material_floor.diffuse_color[2] = 0.2f;
 	 material_floor.diffuse_color[3] = 1.0f;
-	 //material_floor.diffuse_color[0] = 1.0f;	// just for debugging
-	 //material_floor.diffuse_color[1] = 1.0f;
-	 //material_floor.diffuse_color[2] = 1.0f;
-	 //material_floor.diffuse_color[3] = 1.0f;
 
 	 material_floor.specular_color[0] = 0.24f;
 	 material_floor.specular_color[1] = 0.5f;
@@ -484,9 +438,6 @@ void prepare_sphere() {
 	glBindBuffer(GL_ARRAY_BUFFER, sphere_VBO);
 	glBufferData(GL_ARRAY_BUFFER, sphere_n_triangles * n_bytes_per_triangle, sphere_vertices, GL_STATIC_DRAW);
 
-	//glBufferSubData(GL_ARRAY_BUFFER, 0,
-	//	sphere_n_triangles * n_bytes_per_triangle, sphere_vertices);
-
 	// as the geometry data exists now in graphics memory, ...
 	free(sphere_vertices);
 
@@ -497,10 +448,6 @@ void prepare_sphere() {
 	glBindBuffer(GL_ARRAY_BUFFER, sphere_VBO);
 	glVertexAttribPointer(LOC_VERTEX, 3, GL_FLOAT, GL_FALSE, n_bytes_per_vertex, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(LOC_NORMAL, 3, GL_FLOAT, GL_FALSE, n_bytes_per_vertex, BUFFER_OFFSET(3 * sizeof(float)));
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(LOC_TEXCOORD, 2, GL_FLOAT, GL_FALSE, n_bytes_per_vertex, BUFFER_OFFSET(6 * sizeof(float)));
-	//glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -526,17 +473,7 @@ void prepare_sphere() {
 	material_sphere.emissive_color[1] = 0.1f;
 	material_sphere.emissive_color[2] = 0.0f;
 	material_sphere.emissive_color[3] = 1.0f;
-
-	//glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);	// ?
 }
-
-//void set_material_sphere(void) {
-//	glUniform4fv(loc_material_lighting.ambient_color, 1, material_sphere.ambient_color);
-//	glUniform4fv(loc_material_lighting.diffuse_color, 1, material_sphere.diffuse_color);
-//	glUniform4fv(loc_material_lighting.specular_color, 1, material_sphere.specular_color);
-//	glUniform1f(loc_material_lighting.specular_exponent, material_sphere.specular_exponent);
-//	glUniform4fv(loc_material_lighting.emissive_color, 1, material_sphere.emissive_color);
-//}
 
 void draw_sphere(void) {
 	glFrontFace(GL_CCW);	// specifies the orientation of front-facing polygons.
@@ -551,33 +488,17 @@ float PRP_distance_scale[6] = { 0.5f, 1.0f, 2.5f, 5.0f, 10.0f, 20.0f };
 
 void GeometryPass() {
 
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, g_buffer);
 	GLenum draw_buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(sizeof(draw_buffers) / sizeof(draw_buffers[0]), draw_buffers);
 
-	// for background, but not needed.
-	//float defalut_pos[4] = { FLT_MAX, FLT_MAX, FLT_MAX, 1.0f };
-	//glClearBufferfv(GL_COLOR, LOC_VERTEX, defalut_pos);
-
 	glUseProgram(h_ShaderProgram_geometry);
-
-	// Temporary disabled 
-	//ModelMatrix = glm::mat4(1.0f);
-	//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(50.0f, 50.0f, 50.0f));
-	//ModelViewMatrix = ViewMatrix * ModelMatrix;
-	//ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-	//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_simple, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-	//glLineWidth(2.0f);
-	//draw_axes();
-	//glLineWidth(1.0f);
 
 	glDepthMask(GL_TRUE);	// enable writing to depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 
 	//glUseProgram(h_ShaderProgram_TXPS);
-	//set_material_floor();
 	glUniform1f(loc_material_id, float(MATERIAL_ID_FLOOR));
 	glUniform1i(loc_texture_geometry, TEXTURE_ID_FLOOR);
 	ModelMatrix = glm::mat4(1.0f);
@@ -593,7 +514,6 @@ void GeometryPass() {
 	glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
 	draw_floor();
 
-	//set_material_tiger();
 	glUniform1f(loc_material_id, float(MATERIAL_ID_TIGER));
 	{
 		glUniform1i(loc_texture_geometry, TEXTURE_ID_TIGER);
@@ -819,7 +739,6 @@ void GeometryPass() {
 	}
 
 	//////////// +16 //////////////////////////////////////////////////////////////////////////
-	//set_material_tiger();
 	{
 		glUniform1i(loc_texture_geometry, TEXTURE_ID_TIGER);
 		ModelMatrix = glm::mat4(1.0f);
@@ -1057,11 +976,6 @@ void GeometryPass() {
 	draw_tiger();
 	// flag tiger
 
-	//glUseProgram(h_ShaderProgram_simple);
-	//ModelViewProjectionMatrix = glm::scale(ModelViewProjectionMatrix, glm::vec3(20.0f, 20.0f, 20.0f));
-	//glUniformMatrix4fv(loc_ModelViewProjectionMatrix_simple, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
-	//draw_axes();
-
 	glDepthMask(GL_FALSE);
 
 	glUseProgram(0);
@@ -1084,10 +998,6 @@ void StencilPass(uint32_t idx, float radius) {
 	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);	// If depth test fails, stencil value increases by 1.
 	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);	// If depth test fails, stencil value decreases by 1.
 
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//set_material_sphere();
-
 	ModelMatrix = glm::mat4(1.0f);
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[idx].position[0], light[idx].position[1],
 		light[idx].position[2]));
@@ -1107,7 +1017,6 @@ void StencilPass(uint32_t idx, float radius) {
 void PointLightPass(uint32_t idx, float radius) {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, g_buffer);
 	glDrawBuffer(GL_COLOR_ATTACHMENT4);
-	//glClear(GL_COLOR_BUFFER_BIT);
 
 	glUseProgram(h_ShaderProgram_lighting);
 
@@ -1124,8 +1033,6 @@ void PointLightPass(uint32_t idx, float radius) {
 
 	set_material_floor();
 	set_material_tiger();
-	
-	//glClear(GL_COLOR_BUFFER_BIT);
 
 	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);	// not equal => pass, equal => fail
 
@@ -1138,8 +1045,6 @@ void PointLightPass(uint32_t idx, float radius) {
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);	// for the case when camera is inside the sphere of light.
-
-	//set_material_sphere();
 
 	ModelMatrix = glm::mat4(1.0f);
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(light[idx].position[0], light[idx].position[1],
@@ -1177,9 +1082,6 @@ void display(void) {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, g_buffer);
 	glDrawBuffer(GL_COLOR_ATTACHMENT4);
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	GeometryPass();
 
@@ -1543,8 +1445,6 @@ void reshape(int width, int height) {
 }
 
 void cleanup(void) {
-	//glDeleteVertexArrays(1, &axes_VAO); 
-	//glDeleteBuffers(1, &axes_VBO);
 
 	glDeleteVertexArrays(1, &rectangle_VAO);
 	glDeleteBuffers(1, &rectangle_VBO);
@@ -1573,11 +1473,6 @@ void register_callbacks(void) {
 void prepare_shader_program(void) {
 	int i;
 	char string[256];
-	//ShaderInfo shader_info_simple[3] = {
-	//	{ GL_VERTEX_SHADER, "Shaders/simple.vert" },
-	//	{ GL_FRAGMENT_SHADER, "Shaders/simple.frag" },
-	//	{ GL_NONE, NULL }
-	//};
 	//ShaderInfo shader_info_TXPS[3] = {
 	//	{ GL_VERTEX_SHADER, "Shaders/Phong_Tx.vert" },
 	//	{ GL_FRAGMENT_SHADER, "Shaders/Phong_Tx.frag" },
@@ -1598,13 +1493,6 @@ void prepare_shader_program(void) {
 		{ GL_FRAGMENT_SHADER, "Shaders/stencil.frag" },
 		{ GL_NONE, NULL }
 	};
-
-	// simple
-	{
-		//h_ShaderProgram_simple = LoadShaders(shader_info_simple);
-		//loc_primitive_color = glGetUniformLocation(h_ShaderProgram_simple, "u_primitive_color");
-		//loc_ModelViewProjectionMatrix_simple = glGetUniformLocation(h_ShaderProgram_simple, "u_ModelViewProjectionMatrix");
-	}
 
 	// TXPS
 	{
@@ -1816,6 +1704,15 @@ void set_up_scene_lights(void) {
 		light[i].light_attenuation_factors[3] = 1.0f;
 	}
 
+	/*glUseProgram(h_ShaderProgram_lighting);
+
+	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+		glUniform1i(loc_light_lighting[i].light_on, light[i].light_on);
+		glUniform4fv(loc_light_lighting[i].position, 1, light[i].position);
+		glUniform4fv(loc_light_lighting[i].ambient_color, 1, light[i].ambient_color);
+		glUniform4fv(loc_light_lighting[i].diffuse_color, 1, light[i].diffuse_color);
+		glUniform4fv(loc_light_lighting[i].specular_color, 1, light[i].specular_color);
+	}*/
 
 	// spot_light_WC
 	/*light[1].light_on = 1;
@@ -1835,17 +1732,6 @@ void set_up_scene_lights(void) {
 	light[1].spot_direction[2] = 0.0f;
 	light[1].spot_cutoff_angle = 20.0f;
 	light[1].spot_exponent = 8.0f;*/
-
-
-	/*glUseProgram(h_ShaderProgram_lighting);
-	
-	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
-		glUniform1i(loc_light_lighting[i].light_on, light[i].light_on);
-		glUniform4fv(loc_light_lighting[i].position, 1, light[i].position);
-		glUniform4fv(loc_light_lighting[i].ambient_color, 1, light[i].ambient_color);
-		glUniform4fv(loc_light_lighting[i].diffuse_color, 1, light[i].diffuse_color);
-		glUniform4fv(loc_light_lighting[i].specular_color, 1, light[i].specular_color);
-	}*/
 
 	// spot light
 	/*glUniform1i(loc_light[1].light_on, light[1].light_on);
@@ -1903,9 +1789,6 @@ void prepare_gbuffer(void) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, g_albedo_spec, 0);
-
-	//unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-	//glDrawBuffers(4, attachments);
 
 	// depth
 	// What is difference of render buffer and frame buffer?

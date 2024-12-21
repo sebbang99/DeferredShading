@@ -159,6 +159,7 @@
     <ClCompile Include="Tiger_Texture_PS_GLSL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="define.h" />
     <ClInclude Include="My_Shading.h" />
     <ClInclude Include="Shaders\LoadShaders.h" />
   </ItemGroup>
