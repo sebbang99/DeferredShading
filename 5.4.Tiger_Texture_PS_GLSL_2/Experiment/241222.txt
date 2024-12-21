@@ -1,0 +1,13 @@
+[HW3 성능 측정]
+
+METHOD 1
+*** 101.178125 (ms) for 1 frame, 9.883559 (fps)
+
+METHOD 2
+*** 101.107507 (ms) for 1 frame, 9.890462 (fps) 
+
+METHOD 3
+*** 101.722685 (ms) for 1 frame, 9.830649 (fps)
+
+METHOD 4
+*** 101.187404 (ms) for 1 frame, 9.882653 (fps)
