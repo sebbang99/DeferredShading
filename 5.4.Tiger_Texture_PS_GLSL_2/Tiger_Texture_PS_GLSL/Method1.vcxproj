@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{FA135248-705D-4803-828F-F3D3E695C965}</ProjectGuid>
+    <ProjectGuid>{C78A4CEA-EB91-4E0F-B244-A60845F3040E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Tiger_Texture_PS_GLSL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Method4</ProjectName>
+    <ProjectName>Method1</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -156,22 +156,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Method4.cpp" />
     <ClCompile Include="Shaders\LoadShaders.cpp" />
+    <ClCompile Include="Method1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="My_Shading.h" />
     <ClInclude Include="Shaders\LoadShaders.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\method4\geometry.frag" />
-    <None Include="Shaders\method4\geometry.vert" />
-    <None Include="Shaders\method4\lighting.frag" />
-    <None Include="Shaders\method4\lighting.vert" />
-    <None Include="Shaders\method4\Phong_Tx.frag" />
-    <None Include="Shaders\method4\Phong_Tx.vert" />
-    <None Include="Shaders\method4\stencil.frag" />
-    <None Include="Shaders\method4\stencil.vert" />
+    <None Include="Shaders\method1\Phong_Tx.frag" />
+    <None Include="Shaders\method1\Phong_Tx.vert" />
+    <None Include="Shaders\method1\simple.frag" />
+    <None Include="Shaders\method1\simple.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

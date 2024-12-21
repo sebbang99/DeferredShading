@@ -9,9 +9,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="define.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Shaders\LoadShaders.h">
       <Filter>Headers</Filter>
     </ClInclude>
