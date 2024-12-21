@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Method2.cpp">
+    <ClCompile Include="Shaders\LoadShaders.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Shaders\LoadShaders.cpp">
+    <ClCompile Include="Method3.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -12,44 +12,44 @@
     <ClInclude Include="Shaders\LoadShaders.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="My_Shading_Method2.h">
+    <ClInclude Include="My_Shading_Method3.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
-      <UniqueIdentifier>{4d087685-8f96-4d25-bc12-c207b38a26f7}</UniqueIdentifier>
+      <UniqueIdentifier>{5c51f871-6a13-478a-ab1c-4b035f0e8484}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders">
-      <UniqueIdentifier>{847ecc2b-159f-4f33-b4f8-d49fc0879b43}</UniqueIdentifier>
+      <UniqueIdentifier>{790c8b9a-49ae-4083-9965-5e029b6f1c3e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources">
-      <UniqueIdentifier>{ad81cc15-c101-4deb-98b8-3f479033d64c}</UniqueIdentifier>
+      <UniqueIdentifier>{74f546f0-afaf-43c6-9530-46ab6214863d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\method2\geometry.frag">
+    <None Include="Shaders\method3\geometry.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method2\geometry.vert">
+    <None Include="Shaders\method3\geometry.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method2\lighting.frag">
+    <None Include="Shaders\method3\lighting.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method2\lighting.vert">
+    <None Include="Shaders\method3\lighting.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method2\Phong_Tx.frag">
+    <None Include="Shaders\method3\Phong_Tx.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method2\Phong_Tx.vert">
+    <None Include="Shaders\method3\Phong_Tx.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method2\simple.frag">
+    <None Include="Shaders\method3\simple.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method2\simple.vert">
+    <None Include="Shaders\method3\simple.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

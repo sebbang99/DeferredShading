@@ -9,22 +9,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shaders\LoadShaders.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="My_Shading.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{e71f894d-074d-4211-8176-69b3613b1966}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sources">
       <UniqueIdentifier>{cbe9846f-8de7-4f39-bcca-5c3793f25de3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{3dd7abf3-1d06-48c0-8a6b-a201196770fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{a4faf770-153b-49f1-b73a-06a247d4ecf3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,5 +32,13 @@
     <None Include="Shaders\method1\simple.vert">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="My_Shading_Method1.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\LoadShaders.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

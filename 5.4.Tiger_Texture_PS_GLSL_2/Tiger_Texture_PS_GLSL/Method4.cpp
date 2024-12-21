@@ -7,7 +7,7 @@
 #include <FreeImage/FreeImage.h>
 
 #include "Shaders/LoadShaders.h"
-#include "My_Shading.h"
+#include "My_Shading_Method4.h"
 // handles to shader programs
 GLuint h_ShaderProgram_TXPS; 
 GLuint h_ShaderProgram_geometry, h_ShaderProgram_lighting;

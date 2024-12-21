@@ -160,14 +160,14 @@
     <ClCompile Include="Method1.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="My_Shading.h" />
-    <ClInclude Include="Shaders\LoadShaders.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Shaders\method1\Phong_Tx.frag" />
     <None Include="Shaders\method1\Phong_Tx.vert" />
     <None Include="Shaders\method1\simple.frag" />
     <None Include="Shaders\method1\simple.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="My_Shading_Method1.h" />
+    <ClInclude Include="Shaders\LoadShaders.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

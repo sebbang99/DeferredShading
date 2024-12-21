@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Method1", "Tiger_Texture_PS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Method2", "Tiger_Texture_PS_GLSL\Method2.vcxproj", "{3BD8BDB7-1B87-42EE-913D-E7719EBF7E70}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Method3", "Tiger_Texture_PS_GLSL\Method3.vcxproj", "{E75588CD-73E8-4ACA-B699-6AC67A82CB82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -41,6 +43,14 @@ Global
 		{3BD8BDB7-1B87-42EE-913D-E7719EBF7E70}.Release|Win32.Build.0 = Release|Win32
 		{3BD8BDB7-1B87-42EE-913D-E7719EBF7E70}.Release|x64.ActiveCfg = Release|x64
 		{3BD8BDB7-1B87-42EE-913D-E7719EBF7E70}.Release|x64.Build.0 = Release|x64
+		{E75588CD-73E8-4ACA-B699-6AC67A82CB82}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E75588CD-73E8-4ACA-B699-6AC67A82CB82}.Debug|Win32.Build.0 = Debug|Win32
+		{E75588CD-73E8-4ACA-B699-6AC67A82CB82}.Debug|x64.ActiveCfg = Debug|x64
+		{E75588CD-73E8-4ACA-B699-6AC67A82CB82}.Debug|x64.Build.0 = Debug|x64
+		{E75588CD-73E8-4ACA-B699-6AC67A82CB82}.Release|Win32.ActiveCfg = Release|Win32
+		{E75588CD-73E8-4ACA-B699-6AC67A82CB82}.Release|Win32.Build.0 = Release|Win32
+		{E75588CD-73E8-4ACA-B699-6AC67A82CB82}.Release|x64.ActiveCfg = Release|x64
+		{E75588CD-73E8-4ACA-B699-6AC67A82CB82}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

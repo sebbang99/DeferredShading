@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3BD8BDB7-1B87-42EE-913D-E7719EBF7E70}</ProjectGuid>
+    <ProjectGuid>{E75588CD-73E8-4ACA-B699-6AC67A82CB82}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Tiger_Texture_PS_GLSL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -156,21 +156,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Shaders\LoadShaders.cpp" />
-    <ClCompile Include="Method2.cpp" />
+    <ClCompile Include="Method3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="My_Shading_Method2.h" />
+    <ClInclude Include="My_Shading_Method3.h" />
     <ClInclude Include="Shaders\LoadShaders.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\method2\geometry.frag" />
-    <None Include="Shaders\method2\geometry.vert" />
-    <None Include="Shaders\method2\lighting.frag" />
-    <None Include="Shaders\method2\lighting.vert" />
-    <None Include="Shaders\method2\Phong_Tx.frag" />
-    <None Include="Shaders\method2\Phong_Tx.vert" />
-    <None Include="Shaders\method2\simple.frag" />
-    <None Include="Shaders\method2\simple.vert" />
+    <None Include="Shaders\method3\geometry.frag" />
+    <None Include="Shaders\method3\geometry.vert" />
+    <None Include="Shaders\method3\lighting.frag" />
+    <None Include="Shaders\method3\lighting.vert" />
+    <None Include="Shaders\method3\Phong_Tx.frag" />
+    <None Include="Shaders\method3\Phong_Tx.vert" />
+    <None Include="Shaders\method3\simple.frag" />
+    <None Include="Shaders\method3\simple.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

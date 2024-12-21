@@ -160,7 +160,7 @@
     <ClCompile Include="Shaders\LoadShaders.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="My_Shading.h" />
+    <ClInclude Include="My_Shading_Method4.h" />
     <ClInclude Include="Shaders\LoadShaders.h" />
   </ItemGroup>
   <ItemGroup>

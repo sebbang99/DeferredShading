@@ -7,13 +7,13 @@
 #include <FreeImage/FreeImage.h>
 
 #include "Shaders/LoadShaders.h"
-#include "My_Shading_Method2.h"
+#include "My_Shading_Method3.h"
 //GLuint h_ShaderProgram_simple, h_ShaderProgram_TXPS; // handles to shader programs
 GLuint h_ShaderProgram_geometry, h_ShaderProgram_lighting;
 
 #define NUMBER_OF_LIGHT_SUPPORTED 50
 
-#define NUMBER_OF_MATERIALS 3	// default, tiger, floor
+#define NUMBER_OF_MATERIALS 3 // default, tiger, floor
 #define MATERIAL_ID_TIGER 1
 #define MATERIAL_ID_FLOOR 2
 
@@ -39,7 +39,7 @@ GLint loc_g_pos, loc_g_norm, loc_g_albedo_spec;
 GLint loc_global_ambient_color_lighting;
 loc_light_Parameters loc_light_lighting[NUMBER_OF_LIGHT_SUPPORTED];
 GLint loc_flag_texture_mapping_lighting;
-loc_Material_Parameters loc_material_lighting[NUMBER_OF_MATERIALS];
+loc_Material_Parameters loc_material_lighting[NUMBER_OF_LIGHT_SUPPORTED];
 
 unsigned int g_buffer;
 unsigned int g_pos, g_norm, g_albedo_spec;
@@ -93,13 +93,6 @@ Light_Parameters light[NUMBER_OF_LIGHT_SUPPORTED];
 
 GLuint texture_names[N_TEXTURES_USED];
 int flag_texture_mapping;
-
-void CheckError() {
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		printf("!!! ERROR FOUND !!! : 0x%x\n", error);
-	}
-}
 
 void My_glTexImage2D_from_file(char *filename) {
 	FREE_IMAGE_FORMAT tx_file_format;
@@ -229,6 +222,10 @@ float rotation_angle_tiger = 0.0f;
 	 material_floor.diffuse_color[1] = 0.5f;
 	 material_floor.diffuse_color[2] = 0.2f;
 	 material_floor.diffuse_color[3] = 1.0f;
+	 //material_floor.diffuse_color[0] = 1.0f;	// just for debugging
+	 //material_floor.diffuse_color[1] = 1.0f;
+	 //material_floor.diffuse_color[2] = 1.0f;
+	 //material_floor.diffuse_color[3] = 1.0f;
 
 	 material_floor.specular_color[0] = 0.24f;
 	 material_floor.specular_color[1] = 0.5f;
@@ -268,13 +265,11 @@ float rotation_angle_tiger = 0.0f;
  }
 
  void set_material_floor(void) {
-	 glUseProgram(h_ShaderProgram_lighting);
 	 glUniform4fv(loc_material_lighting[MATERIAL_ID_FLOOR].ambient_color, 1, material_floor.ambient_color);
 	 glUniform4fv(loc_material_lighting[MATERIAL_ID_FLOOR].diffuse_color, 1, material_floor.diffuse_color);
 	 glUniform4fv(loc_material_lighting[MATERIAL_ID_FLOOR].specular_color, 1, material_floor.specular_color);
 	 glUniform1f(loc_material_lighting[MATERIAL_ID_FLOOR].specular_exponent, material_floor.specular_exponent);
 	 glUniform4fv(loc_material_lighting[MATERIAL_ID_FLOOR].emissive_color, 1, material_floor.emissive_color);
-	 glUseProgram(h_ShaderProgram_geometry);
  }
 
  void draw_floor(void) {
@@ -444,13 +439,11 @@ void prepare_tiger(void) { // vertices enumerated clockwise
 }
 
 void set_material_tiger(void) {
-	glUseProgram(h_ShaderProgram_lighting);
 	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].ambient_color, 1, material_tiger.ambient_color);
 	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].diffuse_color, 1, material_tiger.diffuse_color);
 	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].specular_color, 1, material_tiger.specular_color);
 	glUniform1f(loc_material_lighting[MATERIAL_ID_TIGER].specular_exponent, material_tiger.specular_exponent);
 	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].emissive_color, 1, material_tiger.emissive_color);
-	glUseProgram(h_ShaderProgram_geometry);
 }
 
 void draw_tiger(void) {
@@ -489,7 +482,7 @@ void display(void) {
 		//glLineWidth(1.0f);
 
 		//glUseProgram(h_ShaderProgram_TXPS);
-  		set_material_floor();
+  		//set_material_floor();
 		glUniform1f(loc_material_id, float(MATERIAL_ID_FLOOR));
 		glUniform1i(loc_texture_geometry, TEXTURE_ID_FLOOR);
 		ModelMatrix = glm::mat4(1.0f);
@@ -505,7 +498,7 @@ void display(void) {
 		glUniformMatrix3fv(loc_ModelMatrixInvTrans_geometry, 1, GL_FALSE, &ModelMatrixInvTrans[0][0]);
 		draw_floor();
 	
- 		set_material_tiger();
+ 		//set_material_tiger();
 		glUniform1f(loc_material_id, float(MATERIAL_ID_TIGER));
 		{
 			glUniform1i(loc_texture_geometry, TEXTURE_ID_TIGER);
@@ -731,7 +724,7 @@ void display(void) {
 		}
 
 		//////////// +16 //////////////////////////////////////////////////////////////////////////
-		set_material_tiger();
+		//set_material_tiger();
 		{		
 			glUniform1i(loc_texture_geometry, TEXTURE_ID_TIGER);
 			ModelMatrix = glm::mat4(1.0f);
@@ -995,6 +988,22 @@ void display(void) {
 		glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
 		glUniform1i(loc_g_albedo_spec, TEXTURE_ID_G_ALBEDO_SPEC);
 
+		set_material_floor();
+		set_material_tiger();
+
+		for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
+			// then calculate radius of light volume/sphere
+			const float maxBrightness = std::fmaxf(std::fmaxf(light[i].diffuse_color[0], light[i].diffuse_color[1]), 
+				light[i].diffuse_color[2]);	// diffuse only?
+
+			float constant = light[i].light_attenuation_factors[0];
+			float linear = light[i].light_attenuation_factors[1];
+			float quadratic = light[i].light_attenuation_factors[2];
+
+			float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (255.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
+			glUniform1f(loc_light_lighting[i].radius, radius);
+		}
+
 		if (quad_VAO == 0)
 		{
 			float quadVertices[] = {
@@ -1021,8 +1030,6 @@ void display(void) {
 
 	glUseProgram(0);
 	// Lighting pass END
-
-	//CheckError();
 
 	glutSwapBuffers();
 }
@@ -1374,13 +1381,13 @@ void prepare_shader_program(void) {
 	//	{ GL_NONE, NULL }
 	//};
 	ShaderInfo shader_info_geometry[3] = {
-		{ GL_VERTEX_SHADER, "Shaders/method2/geometry.vert" },
-		{ GL_FRAGMENT_SHADER, "Shaders/method2/geometry.frag" },
+		{ GL_VERTEX_SHADER, "Shaders/method3/geometry.vert" },
+		{ GL_FRAGMENT_SHADER, "Shaders/method3/geometry.frag" },
 		{ GL_NONE, NULL }	// need this?
 	};
 	ShaderInfo shader_info_lighting[3] = {
-		{ GL_VERTEX_SHADER, "Shaders/method2/lighting.vert" },
-		{ GL_FRAGMENT_SHADER, "Shaders/method2/lighting.frag" },
+		{ GL_VERTEX_SHADER, "Shaders/method3/lighting.vert" },
+		{ GL_FRAGMENT_SHADER, "Shaders/method3/lighting.frag" },
 		{ GL_NONE, NULL }	// need this?
 	};
 
@@ -1471,6 +1478,8 @@ void prepare_shader_program(void) {
 			loc_light_lighting[i].spot_cutoff_angle = glGetUniformLocation(h_ShaderProgram_lighting, string);
 			sprintf(string, "u_light[%d].light_attenuation_factors", i);
 			loc_light_lighting[i].light_attenuation_factors = glGetUniformLocation(h_ShaderProgram_lighting, string);
+			sprintf(string, "u_light[%d].radius", i);
+			loc_light_lighting[i].radius = glGetUniformLocation(h_ShaderProgram_lighting, string);
 		}
 
 		for (i = 0; i < NUMBER_OF_MATERIALS; i++) {
@@ -1586,6 +1595,11 @@ void set_up_scene_lights(void) {
 		light[i].diffuse_color[0] = light[i].specular_color[0] = static_cast<float>(rand() % 100) / 100.0f;
 		light[i].diffuse_color[1] = light[i].specular_color[1] = static_cast<float>(rand() % 100) / 100.0f;
 		light[i].diffuse_color[2] = light[i].specular_color[2] = static_cast<float>(rand() % 100) / 100.0f;
+
+		light[i].light_attenuation_factors[0] = 1.0f;
+		light[i].light_attenuation_factors[1] = 0.014f;
+		light[i].light_attenuation_factors[2] = 0.0007f;
+		light[i].light_attenuation_factors[3] = 1.0f;
 	}
 
 
@@ -1617,6 +1631,8 @@ void set_up_scene_lights(void) {
 		glUniform4fv(loc_light_lighting[i].ambient_color, 1, light[i].ambient_color);
 		glUniform4fv(loc_light_lighting[i].diffuse_color, 1, light[i].diffuse_color);
 		glUniform4fv(loc_light_lighting[i].specular_color, 1, light[i].specular_color);
+
+		glUniform4fv(loc_light_lighting[i].light_attenuation_factors, 1, light[i].light_attenuation_factors);
 	}
 
 	// spot light

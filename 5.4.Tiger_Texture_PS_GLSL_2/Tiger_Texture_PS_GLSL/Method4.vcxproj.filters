@@ -12,7 +12,7 @@
     <ClInclude Include="Shaders\LoadShaders.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="My_Shading.h">
+    <ClInclude Include="My_Shading_Method4.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
