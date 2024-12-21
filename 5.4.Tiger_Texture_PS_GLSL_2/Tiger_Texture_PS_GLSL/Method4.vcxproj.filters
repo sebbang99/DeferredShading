@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Shaders\LoadShaders.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Method4.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="define.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\LoadShaders.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="My_Shading.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\method4\geometry.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method4\geometry.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method4\lighting.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method4\lighting.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method4\Phong_Tx.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method4\Phong_Tx.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method4\stencil.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method4\stencil.vert">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{c70b0bef-d95d-4d0b-9b50-9ccc6dce1d1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{1f233c68-5dc2-4a92-9b20-a372f52211c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{e07d8310-292b-4940-abf2-7da3da55afa4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

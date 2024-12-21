@@ -1479,18 +1479,18 @@ void prepare_shader_program(void) {
 	//	{ GL_NONE, NULL }
 	//};
 	ShaderInfo shader_info_geometry[3] = {
-		{ GL_VERTEX_SHADER, "Shaders/geometry.vert" },
-		{ GL_FRAGMENT_SHADER, "Shaders/geometry.frag" },
+		{ GL_VERTEX_SHADER, "Shaders/method4/geometry.vert" },
+		{ GL_FRAGMENT_SHADER, "Shaders/method4/geometry.frag" },
 		{ GL_NONE, NULL }	// need this?
 	};
 	ShaderInfo shader_info_lighting[3] = {
-		{ GL_VERTEX_SHADER, "Shaders/lighting.vert" },
-		{ GL_FRAGMENT_SHADER, "Shaders/lighting.frag" },
+		{ GL_VERTEX_SHADER, "Shaders/method4/lighting.vert" },
+		{ GL_FRAGMENT_SHADER, "Shaders/method4/lighting.frag" },
 		{ GL_NONE, NULL }	// need this?
 	};
 	ShaderInfo shader_info_stencil[3] = {
-		{ GL_VERTEX_SHADER, "Shaders/stencil.vert" },
-		{ GL_FRAGMENT_SHADER, "Shaders/stencil.frag" },
+		{ GL_VERTEX_SHADER, "Shaders/method4/stencil.vert" },
+		{ GL_FRAGMENT_SHADER, "Shaders/method4/stencil.frag" },
 		{ GL_NONE, NULL }
 	};
 
