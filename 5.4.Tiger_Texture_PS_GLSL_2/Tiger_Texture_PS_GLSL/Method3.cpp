@@ -17,7 +17,7 @@ int frame_cnt = 0;
 // handles to shader programs
 GLuint h_ShaderProgram_geometry, h_ShaderProgram_lighting;
 
-#define NUMBER_OF_LIGHT_SUPPORTED 50
+#define NUMBER_OF_LIGHT_SUPPORTED 100
 
 #define NUMBER_OF_MATERIALS 3 // default, tiger, floor
 #define MATERIAL_ID_TIGER 1
@@ -1423,7 +1423,7 @@ void initialize_OpenGL(void) {
 	//	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	initialCameraPosition = glm::vec3(500.0f, 400.0f, 500.0f);
 	cameraPosition = initialCameraPosition;
-	PRP = PRP_distance_scale[0] * initialCameraPosition;
+	PRP = PRP_distance_scale[2] * initialCameraPosition;
 	VRP = glm::vec3(0.0f, 0.0f, 0.0f);
 	VUV = glm::vec3(0.0f, 1.0f, 0.0f);
 	ViewMatrix = glm::lookAt(PRP, VRP, VUV);

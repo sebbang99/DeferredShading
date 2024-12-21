@@ -32,7 +32,7 @@ struct MATERIAL {
 };
 
 uniform vec4 u_global_ambient_color;
-#define NUMBER_OF_LIGHTS_SUPPORTED 50
+#define NUMBER_OF_LIGHTS_SUPPORTED 100
 uniform LIGHT u_light[NUMBER_OF_LIGHTS_SUPPORTED];
 
 #define NUMBER_OF_MATERIALS 3 // default, tiger, floor

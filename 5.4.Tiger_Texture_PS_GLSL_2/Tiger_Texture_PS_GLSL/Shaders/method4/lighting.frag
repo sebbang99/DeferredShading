@@ -6,7 +6,6 @@
  
 #version 330 core
 
-//in vec2 tex_coords;
 
 uniform sampler2D g_pos;
 uniform sampler2D g_norm;
@@ -33,8 +32,8 @@ struct MATERIAL {
 };
 
 uniform vec4 u_global_ambient_color;
-#define NUMBER_OF_LIGHTS_SUPPORTED 50
-uniform LIGHT u_light;//[NUMBER_OF_LIGHTS_SUPPORTED];
+#define NUMBER_OF_LIGHTS_SUPPORTED 100
+uniform LIGHT u_light;
 
 #define NUMBER_OF_MATERIALS 3 // default, tiger, floor
 uniform MATERIAL u_material[NUMBER_OF_MATERIALS];
@@ -66,70 +65,63 @@ vec4 lighting_equation_textured(in vec3 P_WC, in vec3 N_WC, in vec4 base_color, 
 	// If you turn on the comment above, the global illumination effect will be overlapped.
 	// Therefore, for the global illumination effect, it is recommended that to use new last pass. 
  
-//	for (int i = 0; i < NUMBER_OF_LIGHTS_SUPPORTED; i++) {
-//		if (!u_light.light_on) continue;
 
-		local_scale_factor = one_f;
-		if (u_light.position.w != zero_f) { // point light source
-			L_WC = u_light.position.xyz - P_WC.xyz;
+	local_scale_factor = one_f;
+	if (u_light.position.w != zero_f) { // point light source
+		L_WC = u_light.position.xyz - P_WC.xyz;
 
-			if (u_light.light_attenuation_factors.w != zero_f) {
-				vec4 tmp_vec4;
+		if (u_light.light_attenuation_factors.w != zero_f) {
+			vec4 tmp_vec4;
 
-				tmp_vec4.x = one_f;
-				tmp_vec4.z = dot(L_WC, L_WC);
-				tmp_vec4.y = sqrt(tmp_vec4.z);
-				tmp_vec4.w = zero_f;
+			tmp_vec4.x = one_f;
+			tmp_vec4.z = dot(L_WC, L_WC);
+			tmp_vec4.y = sqrt(tmp_vec4.z);
+			tmp_vec4.w = zero_f;
 
-				// for method 3-1
-//				if (tmp_vec4.y > u_light[i].radius) {
-//					continue;
-//				}
+			local_scale_factor = one_f/dot(tmp_vec4, u_light.light_attenuation_factors);
+		}
 
-				local_scale_factor = one_f/dot(tmp_vec4, u_light.light_attenuation_factors);
-			}
-
-			// for local illumination.
+		// for local illumination.
 //			if (sqrt(dot(L_WC, L_WC)) > LIGHT_RANGE) {	// should be upgraded for efficiency.
 //				local_scale_factor = zero_f;
 //			}
 
-			L_WC = normalize(L_WC);
+		L_WC = normalize(L_WC);
 
-			if (u_light.spot_cutoff_angle < 180.0f) { // [0.0f, 90.0f] or 180.0f
-				float spot_cutoff_angle = clamp(u_light.spot_cutoff_angle, zero_f, 90.0f);
-				vec3 spot_dir = normalize(u_light.spot_direction);
+		if (u_light.spot_cutoff_angle < 180.0f) { // [0.0f, 90.0f] or 180.0f
+			float spot_cutoff_angle = clamp(u_light.spot_cutoff_angle, zero_f, 90.0f);
+			vec3 spot_dir = normalize(u_light.spot_direction);
 
-				tmp_float = dot(-L_WC, spot_dir);
-				if (tmp_float >= cos(radians(spot_cutoff_angle))) {
-					tmp_float = pow(tmp_float, u_light.spot_exponent);
-				}
-				else 
-					tmp_float = zero_f;
-				local_scale_factor *= tmp_float;
+			tmp_float = dot(-L_WC, spot_dir);
+			if (tmp_float >= cos(radians(spot_cutoff_angle))) {
+				tmp_float = pow(tmp_float, u_light.spot_exponent);
 			}
+			else 
+				tmp_float = zero_f;
+			local_scale_factor *= tmp_float;
 		}
-		else {  // directional light source
-			L_WC = normalize(u_light.position.xyz);
-		}	
+	}
+	else {  // directional light source
+		L_WC = normalize(u_light.position.xyz);
+	}	
 
-		if (local_scale_factor > zero_f) {		
-		 	vec4 local_color_sum = u_light.ambient_color * ambient_color;
+	if (local_scale_factor > zero_f) {		
+		vec4 local_color_sum = u_light.ambient_color * ambient_color;
 
-			tmp_float = dot(N_WC, L_WC);  
-			if (tmp_float > zero_f) {  
-				local_color_sum += u_light.diffuse_color*base_color*tmp_float;
+		tmp_float = dot(N_WC, L_WC);  
+		if (tmp_float > zero_f) {  
+			local_color_sum += u_light.diffuse_color*base_color*tmp_float;
 			
-				vec3 H_WC = normalize(L_WC - normalize(P_WC));
-				tmp_float = dot(N_WC, H_WC); 
-				if (tmp_float > zero_f) {
-					local_color_sum += u_light.specular_color
-				                       *specular_color*pow(tmp_float, specular_exponent);
-				}
+			vec3 H_WC = normalize(L_WC - normalize(P_WC));
+			tmp_float = dot(N_WC, H_WC); 
+			if (tmp_float > zero_f) {
+				local_color_sum += u_light.specular_color
+				                    *specular_color*pow(tmp_float, specular_exponent);
 			}
-			color_sum += local_scale_factor*local_color_sum;
 		}
-//	}
+		color_sum += local_scale_factor*local_color_sum;
+	}
+
  	return color_sum;
 }
 
