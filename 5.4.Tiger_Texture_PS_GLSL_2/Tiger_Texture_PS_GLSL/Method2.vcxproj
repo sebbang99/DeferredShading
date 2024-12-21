@@ -167,10 +167,6 @@
     <None Include="Shaders\method2\geometry.vert" />
     <None Include="Shaders\method2\lighting.frag" />
     <None Include="Shaders\method2\lighting.vert" />
-    <None Include="Shaders\method2\Phong_Tx.frag" />
-    <None Include="Shaders\method2\Phong_Tx.vert" />
-    <None Include="Shaders\method2\simple.frag" />
-    <None Include="Shaders\method2\simple.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -40,17 +40,5 @@
     <None Include="Shaders\method2\lighting.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\method2\Phong_Tx.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\method2\Phong_Tx.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\method2\simple.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\method2\simple.vert">
-      <Filter>Shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>

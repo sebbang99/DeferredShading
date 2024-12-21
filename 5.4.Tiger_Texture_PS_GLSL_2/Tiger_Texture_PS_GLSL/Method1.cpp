@@ -395,7 +395,7 @@ void CalculateFPS() {
 	if (frame_cnt >= 1000) {
 		cur_time = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double, std::milli> inter_time = cur_time - base_time;
-		printf("*** %lf (ms) for 1 frame, %lf (fps)\n", inter_time.count() / 1000.0, 1000.0 / inter_time.count());
+		printf("*** %lf (ms) for 1 frame, %lf (fps)\n", inter_time.count() / 1000.0, 1000000.0 / inter_time.count());
 
 		frame_cnt = 0;
 		base_time = cur_time;
