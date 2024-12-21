@@ -1488,6 +1488,8 @@ void initialize_OpenGL(void) {
 
 void set_up_scene_lights(void) {
 
+	srand(125);
+
 	for (uint32_t i = 0; i < NUMBER_OF_LIGHT_SUPPORTED; i++) {
 		light[i].light_on = 1;
 			
