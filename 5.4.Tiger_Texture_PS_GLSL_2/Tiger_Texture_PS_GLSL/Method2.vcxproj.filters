@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Method2.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\LoadShaders.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shaders\LoadShaders.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="My_Shading.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{4d087685-8f96-4d25-bc12-c207b38a26f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{847ecc2b-159f-4f33-b4f8-d49fc0879b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{ad81cc15-c101-4deb-98b8-3f479033d64c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\method2\geometry.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method2\geometry.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method2\lighting.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method2\lighting.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method2\Phong_Tx.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method2\Phong_Tx.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method2\simple.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\method2\simple.vert">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
