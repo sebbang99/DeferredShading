@@ -45,7 +45,7 @@ GLint loc_ModelViewProjectionMatrix_stencil;
 // location of uniform variables for global pass shaders
 GLint loc_global_ambient_color_global;
 GLint loc_g_albedo_spec_global;
-loc_Material_Parameters loc_material_global[NUMBER_OF_MATERIALS];
+loc_Material_Parameters_global loc_material_global[NUMBER_OF_MATERIALS];
 GLint loc_flag_texture_mapping_global;
 
 GLuint g_buffer;
@@ -231,14 +231,10 @@ float rotation_angle_tiger = 0.0f;
 	 glUniform4fv(loc_material_lighting[MATERIAL_ID_FLOOR].diffuse_color, 1, material_floor.diffuse_color);
 	 glUniform4fv(loc_material_lighting[MATERIAL_ID_FLOOR].specular_color, 1, material_floor.specular_color);
 	 glUniform1f(loc_material_lighting[MATERIAL_ID_FLOOR].specular_exponent, material_floor.specular_exponent);
-	 glUniform4fv(loc_material_lighting[MATERIAL_ID_FLOOR].emissive_color, 1, material_floor.emissive_color);
  }
 
  void set_material_floor_global(void) {
-	 glUniform4fv(loc_material_global[MATERIAL_ID_FLOOR].ambient_color, 1, material_floor.ambient_color);
 	 glUniform4fv(loc_material_global[MATERIAL_ID_FLOOR].diffuse_color, 1, material_floor.diffuse_color);
-	 glUniform4fv(loc_material_global[MATERIAL_ID_FLOOR].specular_color, 1, material_floor.specular_color);
-	 glUniform1f(loc_material_global[MATERIAL_ID_FLOOR].specular_exponent, material_floor.specular_exponent);
 	 glUniform4fv(loc_material_global[MATERIAL_ID_FLOOR].emissive_color, 1, material_floor.emissive_color);
  }
 
@@ -414,14 +410,10 @@ void set_material_tiger(void) {
 	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].diffuse_color, 1, material_tiger.diffuse_color);
 	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].specular_color, 1, material_tiger.specular_color);
 	glUniform1f(loc_material_lighting[MATERIAL_ID_TIGER].specular_exponent, material_tiger.specular_exponent);
-	glUniform4fv(loc_material_lighting[MATERIAL_ID_TIGER].emissive_color, 1, material_tiger.emissive_color);
 }
 
 void set_material_tiger_global(void) {
-	glUniform4fv(loc_material_global[MATERIAL_ID_TIGER].ambient_color, 1, material_tiger.ambient_color);
 	glUniform4fv(loc_material_global[MATERIAL_ID_TIGER].diffuse_color, 1, material_tiger.diffuse_color);
-	glUniform4fv(loc_material_global[MATERIAL_ID_TIGER].specular_color, 1, material_tiger.specular_color);
-	glUniform1f(loc_material_global[MATERIAL_ID_TIGER].specular_exponent, material_tiger.specular_exponent);
 	glUniform4fv(loc_material_global[MATERIAL_ID_TIGER].emissive_color, 1, material_tiger.emissive_color);
 }
 
@@ -1596,8 +1588,6 @@ void prepare_shader_program(void) {
 			loc_material_lighting[i].diffuse_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
 			sprintf(string, "u_material[%d].specular_color", i);
 			loc_material_lighting[i].specular_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
-			sprintf(string, "u_material[%d].emissive_color", i);
-			loc_material_lighting[i].emissive_color = glGetUniformLocation(h_ShaderProgram_lighting, string);
 			sprintf(string, "u_material[%d].specular_exponent", i);
 			loc_material_lighting[i].specular_exponent = glGetUniformLocation(h_ShaderProgram_lighting, string);
 		}
@@ -1619,16 +1609,10 @@ void prepare_shader_program(void) {
 	loc_g_albedo_spec_global = glGetUniformLocation(h_ShaderProgram_global, "g_albedo_spec");
 
 	for (i = 0; i < NUMBER_OF_MATERIALS; i++) {
-		sprintf(string, "u_material[%d].ambient_color", i);
-		loc_material_global[i].ambient_color = glGetUniformLocation(h_ShaderProgram_global, string);
 		sprintf(string, "u_material[%d].diffuse_color", i);
 		loc_material_global[i].diffuse_color = glGetUniformLocation(h_ShaderProgram_global, string);
-		sprintf(string, "u_material[%d].specular_color", i);
-		loc_material_global[i].specular_color = glGetUniformLocation(h_ShaderProgram_global, string);
 		sprintf(string, "u_material[%d].emissive_color", i);
 		loc_material_global[i].emissive_color = glGetUniformLocation(h_ShaderProgram_global, string);
-		sprintf(string, "u_material[%d].specular_exponent", i);
-		loc_material_global[i].specular_exponent = glGetUniformLocation(h_ShaderProgram_global, string);
 	}
 	
 	loc_flag_texture_mapping_global = glGetUniformLocation(h_ShaderProgram_global, "u_flag_texture_mapping");
@@ -1657,18 +1641,14 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 		glUniform4f(loc_material_lighting[i].ambient_color, 0.2f, 0.2f, 0.2f, 1.0f);
 		glUniform4f(loc_material_lighting[i].diffuse_color, 0.8f, 0.8f, 0.8f, 1.0f);
 		glUniform4f(loc_material_lighting[i].specular_color, 0.0f, 0.0f, 0.0f, 1.0f);
-		glUniform4f(loc_material_lighting[i].emissive_color, 0.0f, 0.0f, 0.0f, 1.0f);
 		glUniform1f(loc_material_lighting[i].specular_exponent, 0.0f); // [0.0, 128.0]
 	}
 
 	glUseProgram(h_ShaderProgram_global);
 	glUniform4f(loc_global_ambient_color_global, 0.115f, 0.115f, 0.115f, 1.0f);
 	for (i = 0; i < NUMBER_OF_MATERIALS; i++) {
-		glUniform4f(loc_material_lighting[i].ambient_color, 0.2f, 0.2f, 0.2f, 1.0f);
-		glUniform4f(loc_material_lighting[i].diffuse_color, 0.8f, 0.8f, 0.8f, 1.0f);
-		glUniform4f(loc_material_lighting[i].specular_color, 0.0f, 0.0f, 0.0f, 1.0f);
-		glUniform4f(loc_material_lighting[i].emissive_color, 0.0f, 0.0f, 0.0f, 1.0f);
-		glUniform1f(loc_material_lighting[i].specular_exponent, 0.0f); // [0.0, 128.0]
+		glUniform4f(loc_material_global[i].diffuse_color, 0.8f, 0.8f, 0.8f, 1.0f);
+		glUniform4f(loc_material_global[i].emissive_color, 0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	glUseProgram(0);

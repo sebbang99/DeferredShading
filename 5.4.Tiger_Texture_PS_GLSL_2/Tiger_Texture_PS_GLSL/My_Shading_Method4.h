@@ -26,6 +26,10 @@ typedef struct _Material_Parameters {
 } Material_Parameters;
 
 typedef struct _loc_Material_Parameters {
-	GLint ambient_color, diffuse_color, specular_color, emissive_color;
+	GLint ambient_color, diffuse_color, specular_color;
 	GLint specular_exponent;
 } loc_Material_Parameters;
+
+typedef struct _loc_Material_Parameters_global {
+	GLint diffuse_color, emissive_color;
+} loc_Material_Parameters_global;

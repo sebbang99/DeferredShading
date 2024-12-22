@@ -982,17 +982,17 @@ void keyboard(unsigned char key, int x, int y) {
 	glm::vec4 position_EC;
 	glm::vec3 direction_EC;
 
-	if ((key >= '0') && (key <= '0' + NUMBER_OF_LIGHT_SUPPORTED - 1)) {
-		int light_ID = (int) (key - '0');
+	//if ((key >= '0') && (key <= '0' + NUMBER_OF_LIGHT_SUPPORTED - 1)) {
+	//	int light_ID = (int) (key - '0');
 
-		glUseProgram(h_ShaderProgram_lighting);
-		light[light_ID].light_on = 1 - light[light_ID].light_on;
-		glUniform1i(loc_light_lighting[light_ID].light_on, light[light_ID].light_on);
-		glUseProgram(0);
+	//	glUseProgram(h_ShaderProgram_lighting);
+	//	light[light_ID].light_on = 1 - light[light_ID].light_on;
+	//	glUniform1i(loc_light_lighting[light_ID].light_on, light[light_ID].light_on);
+	//	glUseProgram(0);
 
-		glutPostRedisplay();
-		return;
-	}
+	//	glutPostRedisplay();
+	//	return;
+	//}
 
 	switch (key) {
 	case 'z':

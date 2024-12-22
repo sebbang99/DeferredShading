@@ -14,11 +14,8 @@ uniform vec4 u_global_ambient_color;
 uniform sampler2D g_albedo_spec;
 
 struct MATERIAL {
-	vec4 ambient_color;
 	vec4 diffuse_color;
-	vec4 specular_color;
 	vec4 emissive_color;
-	float specular_exponent;
 };
 
 #define NUMBER_OF_MATERIALS 3
