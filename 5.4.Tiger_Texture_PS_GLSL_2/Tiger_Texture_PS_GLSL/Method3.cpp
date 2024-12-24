@@ -9,7 +9,9 @@
 // for calculating FPS
 #include <chrono>
 #include <iostream>
-std::chrono::steady_clock::time_point base_time, cur_time;
+//std::chrono::steady_clock::time_point base_time, cur_time;
+#include "./wglext.h"
+int base_time = 0;
 int frame_cnt = 0;
 
 #include "Shaders/LoadShaders.h"
@@ -408,18 +410,29 @@ void draw_tiger(void) {
 // callbacks
 float PRP_distance_scale[6] = { 0.5f, 1.0f, 2.5f, 5.0f, 10.0f, 20.0f };
 
-void CalculateFPS() {
-	frame_cnt++;
+//void CalculateFPS() {
+//	frame_cnt++;
+//
+//	if (frame_cnt >= 1000) {
+//		glFinish();
+//
+//		cur_time = std::chrono::high_resolution_clock::now();
+//		std::chrono::duration<double, std::milli> inter_time = cur_time - base_time;
+//		printf("*** %lf (ms) for 1 frame, %lf (fps)\n", inter_time.count() / 1000.0, 1000000.0 / inter_time.count());
+//
+//		frame_cnt = 0;
+//		base_time = cur_time;
+//	}
+//}
 
-	if (frame_cnt >= 1000) {
-		glFinish();
+void setVSync(int interval) {
+	// wglSwapIntervalEXT¸¦ °¡Á®¿É´Ï´Ù.
+	typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC)(int interval);
+	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
+	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
 
-		cur_time = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double, std::milli> inter_time = cur_time - base_time;
-		printf("*** %lf (ms) for 1 frame, %lf (fps)\n", inter_time.count() / 1000.0, 1000000.0 / inter_time.count());
-
-		frame_cnt = 0;
-		base_time = cur_time;
+	if (wglSwapIntervalEXT) {
+		wglSwapIntervalEXT(interval); // interval °ª: 0 (VSync ²û), 1 (ÄÔ)
 	}
 }
 
@@ -959,7 +972,8 @@ void display(void) {
 	glUseProgram(0);
 	// Lighting pass END
 
-	CalculateFPS();
+	//CalculateFPS();
+	frame_cnt++;
 
 	glutSwapBuffers();
 }
@@ -968,7 +982,7 @@ void timer_scene(int value) {
 	timestamp_scene = (timestamp_scene + 1) % UINT_MAX;
 	cur_frame_tiger = timestamp_scene % N_TIGER_FRAMES;
 	rotation_angle_tiger = (timestamp_scene % 360)*TO_RADIAN;
-	glutPostRedisplay();
+	//glutPostRedisplay();
 	if (flag_tiger_animation)
 		glutTimerFunc(100, timer_scene, 0);
 }
@@ -1286,6 +1300,21 @@ void cleanup(void) {
 	glDeleteTextures(N_TEXTURES_USED, texture_names);
 }
 
+void idle() {
+	int currentTime = glutGet(GLUT_ELAPSED_TIME);
+	int timeInterval = currentTime - base_time;
+
+	if (timeInterval > 1000) {
+		float fps = frame_cnt * 1000.0f / timeInterval;
+		base_time = currentTime;
+		frame_cnt = 0;
+
+		printf("FPS: %.2f\n", fps);
+	}
+
+	glutPostRedisplay();
+}
+
 void register_callbacks(void) {
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
@@ -1293,6 +1322,7 @@ void register_callbacks(void) {
 	glutReshapeFunc(reshape);
 	glutTimerFunc(100, timer_scene, 0);
 	glutCloseFunc(cleanup);
+	glutIdleFunc(idle);
 }
 
 void prepare_shader_program(void) {
@@ -1639,7 +1669,8 @@ void main(int argc, char *argv[]) {
 
 	greetings(program_name, messages, N_MESSAGE_LINES);
 
-	base_time = std::chrono::high_resolution_clock::now();
+	//base_time = std::chrono::high_resolution_clock::now();
+	setVSync(0);
 	initialize_renderer();
 
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
