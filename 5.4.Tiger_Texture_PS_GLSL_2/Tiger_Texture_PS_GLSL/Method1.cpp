@@ -1681,22 +1681,15 @@ void cleanup(void) {
 }
 
 void idle() {
-	int currentTime = glutGet(GLUT_ELAPSED_TIME);
-	int timeInterval = currentTime - base_time;
+	if (frame_cnt > 10000) {
+		int currentTime = glutGet(GLUT_ELAPSED_TIME);
+		int timeInterval = currentTime - base_time;
 
-	if (timeInterval > 1000) {
-		double fps = frame_cnt * 1000.0f / timeInterval;
+		float fps = frame_cnt * 1000.0f / timeInterval;
 		base_time = currentTime;
 		frame_cnt = 0;
 
-		printf("FPS : %.3lf\n", fps);
-		accum_fps.push_back(fps);
-
-		if (accum_fps.size() == 10000) {
-
-			double sum = std::accumulate(accum_fps.begin(), accum_fps.end(), 0.0);
-			printf("*** avg FPS : %.3lf\n", sum / accum_fps.size());
-		}
+		printf("FPS: %.2f\n", fps);
 	}
 
 	glutPostRedisplay();
