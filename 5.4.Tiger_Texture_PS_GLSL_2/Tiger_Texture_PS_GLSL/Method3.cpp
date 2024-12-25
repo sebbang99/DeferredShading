@@ -1301,10 +1301,10 @@ void cleanup(void) {
 }
 
 void idle() {
-	int currentTime = glutGet(GLUT_ELAPSED_TIME);
-	int timeInterval = currentTime - base_time;
+	if (frame_cnt > 10000) {
+		int currentTime = glutGet(GLUT_ELAPSED_TIME);
+		int timeInterval = currentTime - base_time;
 
-	if (timeInterval > 1000) {
 		float fps = frame_cnt * 1000.0f / timeInterval;
 		base_time = currentTime;
 		frame_cnt = 0;
