@@ -1,0 +1,4 @@
+method1 6000
+method2 4800
+method3 4700
+method4 1300~1400

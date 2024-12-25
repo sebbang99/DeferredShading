@@ -12,4 +12,4 @@ METHOD 3
 METHOD 4
 *** 101.187404 (ms) for 1 frame, 9.882653 (fps)
 
-glutIdleFunc()
+glutIdleFunc() ?
