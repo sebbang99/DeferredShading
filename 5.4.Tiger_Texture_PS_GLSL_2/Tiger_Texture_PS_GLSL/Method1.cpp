@@ -1336,7 +1336,7 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 }
 
 void initialize_flags(void) {
-	flag_tiger_animation = 1;
+	flag_tiger_animation = 0;
 	flag_polygon_fill = 1;
 	flag_texture_mapping = 1;
 	flag_fog = 0;
