@@ -1453,7 +1453,7 @@ void initialize_OpenGL(void) {
 	//	glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	initialCameraPosition = glm::vec3(500.0f, 400.0f, 500.0f);
 	cameraPosition = initialCameraPosition;
-	PRP = PRP_distance_scale[2] * initialCameraPosition;
+	PRP = PRP_distance_scale[1] * initialCameraPosition;
 	VRP = glm::vec3(0.0f, 0.0f, 0.0f);
 	VUV = glm::vec3(0.0f, 1.0f, 0.0f);
 	ViewMatrix = glm::lookAt(PRP, VRP, VUV);
