@@ -1260,7 +1260,6 @@ void GeometryPass() {
 		ModelMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelMatrix));
 		ModelViewMatrix = ViewMatrix * ModelMatrix;
 		ModelViewProjectionMatrix = ProjectionMatrix * ModelViewMatrix;
-		ModelViewMatrixInvTrans = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
 
 		glUniformMatrix4fv(loc_ModelViewProjectionMatrix_geometry, 1, GL_FALSE, &ModelViewProjectionMatrix[0][0]);
 		glUniformMatrix4fv(loc_ModelMatrix_geometry, 1, GL_FALSE, &ModelMatrix[0][0]);
@@ -1639,9 +1638,6 @@ void display(void) {
 
 	FinalPass();
 
-	//glUseProgram(0);
-
-	//CalculateFPS();
 	frame_cnt++;
 
 	glutSwapBuffers();
@@ -2132,7 +2128,7 @@ void initialize_lights_and_material(void) { // follow OpenGL conventions for ini
 }
 
 void initialize_flags(void) {
-	flag_tiger_animation = 1;
+	flag_tiger_animation = 0;
 	flag_polygon_fill = 1;
 	flag_texture_mapping = 1;
 	//flag_fog = 0;
