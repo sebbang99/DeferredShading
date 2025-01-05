@@ -62,6 +62,65 @@ glm::vec3 u, v, n;
 // lights in scene
 Light_Parameters light[NUMBER_OF_LIGHT_SUPPORTED];
 
+// cubemap
+std::vector<std::string> faces
+{
+	"Data/skybox/right.jpg",
+	"Data/skybox/left.jpg",
+	"Data/skybox/top.jpg",
+	"Data/skybox/bottom.jpg",
+	"Data/skybox/front.jpg",
+	"Data/skybox/back.jpg"
+};
+
+unsigned int load_cubemap(std::vector<std::string> faces)
+{
+	unsigned int texture_id;
+	glGenTextures(1, &texture_id);	// generate texture handle.
+	glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+
+	FREE_IMAGE_FORMAT tx_file_format;
+	int tx_bits_per_pixel;
+	FIBITMAP* tx_pixmap, * tx_pixmap_32;
+
+	int width, height;
+	GLvoid* data;
+
+	for (unsigned int i = 0; i < faces.size(); i++) {
+		tx_file_format = FreeImage_GetFileType(faces[i].c_str(), 0);
+		// assume everything is fine with reading texture from file: no error checking
+		tx_pixmap = FreeImage_Load(tx_file_format, faces[i].c_str());
+		tx_bits_per_pixel = FreeImage_GetBPP(tx_pixmap);
+
+		fprintf(stdout, " * A %d-bit texture was read from %s.\n", tx_bits_per_pixel, faces[i].c_str());
+		if (tx_bits_per_pixel == 32)
+			tx_pixmap_32 = tx_pixmap;
+		else {
+			fprintf(stdout, " * Converting texture from %d bits to 32 bits...\n", tx_bits_per_pixel);
+			tx_pixmap_32 = FreeImage_ConvertTo32Bits(tx_pixmap);
+		}
+
+		width = FreeImage_GetWidth(tx_pixmap_32);
+		height = FreeImage_GetHeight(tx_pixmap_32);
+		data = FreeImage_GetBits(tx_pixmap_32);
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+		fprintf(stdout, " * Loaded %dx%d RGBA texture into graphics memory.\n\n", width, height);
+
+		FreeImage_Unload(tx_pixmap_32);
+		if (tx_bits_per_pixel != 32)
+			FreeImage_Unload(tx_pixmap);
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// texture's 1st dimension
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);	// 2nd dimension
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);	// 3rd dimension
+
+	return texture_id;
+}
+
 // texture stuffs
 #define N_TEXTURES_USED 5
 #define TEXTURE_ID_FLOOR 0
