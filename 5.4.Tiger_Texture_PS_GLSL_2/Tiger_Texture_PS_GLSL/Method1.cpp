@@ -32,6 +32,7 @@ loc_Material_Parameters loc_material;
 GLint loc_ModelViewProjectionMatrix_TXPS;
 GLint loc_ModelMatrix_TXPS, loc_ModelMatrixInvTrans_TXPS;
 GLint loc_texture, loc_flag_texture_mapping, loc_flag_fog;
+GLint loc_cubemap;
 
 // include glm/*.hpp only if necessary
 //#include <glm/glm.hpp> 
@@ -121,6 +122,64 @@ unsigned int load_cubemap(std::vector<std::string> faces)
 	return texture_id;
 }
 
+// positions of 2 triangles of 6 faces
+float cubemap_vertices[] = {
+	-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+};
+
+unsigned int cubemap_VAO, cubemap_VBO;
+void prepare_cubemap() {
+	glGenVertexArrays(1, &cubemap_VAO);
+	glGenBuffers(1, &cubemap_VBO);
+
+	glBindVertexArray(cubemap_VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cubemap_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubemap_vertices), &cubemap_vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+}
+
 // texture stuffs
 #define N_TEXTURES_USED 5
 #define TEXTURE_ID_FLOOR 0
@@ -128,6 +187,7 @@ unsigned int load_cubemap(std::vector<std::string> faces)
 #define TEXTURE_ID_GRASS 2
 #define TEXTURE_ID_BIRDS 3
 #define TEXTURE_ID_APPLES 4
+#define TEXTURE_ID_CUBEMAP 5
 
 GLuint texture_names[N_TEXTURES_USED];
 int flag_texture_mapping;
@@ -1412,6 +1472,12 @@ void display(void) {
 	draw_tiger(); 
 	// flag tiger
 
+	prepare_cubemap();
+	unsigned int cubemap_texture = load_cubemap(faces);
+
+	glBindVertexArray(cubemap_VAO);
+	glActiveTexture()
+
 	glUseProgram(0);
 
 	//CalculateFPS();
@@ -1767,9 +1833,11 @@ void register_callbacks(void) {
 void prepare_shader_program(void) {
 	int i;
 	char string[256];
-	ShaderInfo shader_info_TXPS[3] = {
+	ShaderInfo shader_info_TXPS[5] = {
 		{ GL_VERTEX_SHADER, "Shaders/method1/Phong_Tx.vert" },
 		{ GL_FRAGMENT_SHADER, "Shaders/method1/Phong_Tx.frag" },
+		{ GL_VERTEX_SHADER, "Shaders/method1/cubemap.vert" },
+		{ GL_FRAGMENT_SHADER, "Shaders/method1/cubemap.frag" },
 		{ GL_NONE, NULL }
 	};
 
@@ -1810,6 +1878,9 @@ void prepare_shader_program(void) {
 
 	loc_flag_texture_mapping = glGetUniformLocation(h_ShaderProgram_TXPS, "u_flag_texture_mapping");
 	loc_flag_fog = glGetUniformLocation(h_ShaderProgram_TXPS, "u_flag_fog");
+
+	// cubemap extension
+	loc_cubemap = glGetUniformLocation(h_ShaderProgram_TXPS, "u_cubemap");
 }
 
 void initialize_lights_and_material(void) { // follow OpenGL conventions for initialization
